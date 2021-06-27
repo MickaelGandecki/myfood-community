@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9.414 6.121">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+        stroke: #2ea636;
+        stroke-miterlimit: 10;
+        stroke-width: 2px;
+      }
+    </style>
+  </defs>
+  <path id="Control" class="cls-1" d="M8,0,4,4,0,0" transform="translate(0.707 0.707)"/>
+</svg>

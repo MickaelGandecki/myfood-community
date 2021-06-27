@@ -1,0 +1,191 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script type="text/javascript">
+
+    function onManageProductionUnitsEventsClick() {
+        window.location = window.location.origin + "/Events/Manage/";
+    }
+
+    function onManageProductionUnitOwnerClick() {
+        window.location = window.location.origin + "/ProductionUnitOwner/Index/";
+    }
+
+    function onManageUserClick() {
+        window.location = window.location.origin + "/Admin/Index/";
+    }
+
+    function onFeelingRequestClick() {
+        $.ajax({
+            url: "@Url.Action("SendFeelingRequest", "ProductionUnits")",
+            dataType: "json",
+            type: "POST",
+            success: function (response) {
+                alert("Message Sent");
+        }
+    });
+    }
+
+</script>
+
+<div id="main-section-header" class="row">
+    <h2 id="title" class="col-md-3">[[[Production Units List]]]</h2>
+    <div style="clear:both;"></div>
+</div>
+
+<div id="productionUnits-grid" class="main-section-content row">
+    <div id="productionUnits-details" class="col-md-2">
+        <h3 class="section-header">[[[Manage Production Units from Pioneer Citizen Network]]]</h3>
+
+        <br />
+
+        <div id="managementButton">
+            <p>
+                @(Html.Kendo().Button()
+            .Name("manageProductionUnitsEventsButton")
+            .HtmlAttributes(new { @class = "toggleButton btn-block", @style = "height: 50px; color: #FFFFFF; background-color: #018001;" })
+            .Content("[[[Manage Production Units Events]]]")
+            .Events(ev => ev.Click("onManageProductionUnitsEventsClick")))
+            </p>
+
+            <p>
+                @(Html.Kendo().Button()
+            .Name("manageProductionUnitOwnerButton")
+            .HtmlAttributes(new { @class = "toggleButton btn-block", @style = "height: 50px; color: #FFFFFF; background-color: #018001;" })
+            .Content("[[[Manage Production Unit Owners]]]")
+            .Events(ev => ev.Click("onManageProductionUnitOwnerClick")))
+            </p>
+
+            <p>
+                @(Html.Kendo().Button()
+            .Name("manageUserButton")
+            .HtmlAttributes(new { @class = "toggleButton btn-block", @style = "height: 50px; color: #FFFFFF; background-color: #018001;" })
+            .Content("[[[Manage Users]]]")
+            .Events(ev => ev.Click("onManageUserClick")))
+            </p>
+
+            <p>
+                @(Html.Kendo().Button()
+            .Name("sendFeelingRequestButton")
+            .HtmlAttributes(new { @class = "toggleButton btn-block", @style = "height: 50px; color: #FFFFFF; background-color: #018001;" })
+            .Content("[[[Send Feeling Request]]]")
+            .Events(ev => ev.Click("onFeelingRequestClick")))
+            </p>
+        </div>
+    </div>
+    <div id="grid-container" class="col-md-10" style="padding-bottom:40px">
+        @(Html.Kendo().Grid<myfoodapp.Hub.Models.ProductionUnitViewModel>()
+        .Name("grid")
+        .Columns(columns =>
+        {
+            columns.ForeignKey(c => c.ownerId, (System.Collections.IEnumerable)ViewData["owners"], "Id", "pioneerCitizenName").Title("[[[owner]]]").Groupable(false).Width(300).Filterable(ftb => ftb.Cell(cell => cell.SuggestionOperator(FilterType.Contains).ShowOperators(false)));
+            columns.Bound(c => c.startDate).Format("{0:d}").MinScreenWidth(380).Groupable(false);
+            columns.ForeignKey(c => c.productionUnitTypeId, (System.Collections.IEnumerable)ViewData["productionUnitTypes"], "Id", "name").Title("[[[prod. type]]]").Filterable(ftb => ftb.Cell(cell => cell.ShowOperators(false))).MinScreenWidth(380);
+            columns.ForeignKey(c => c.productionUnitStatusId, (System.Collections.IEnumerable)ViewData["productionUnitStatus"], "Id", "name").Title("[[[status]]]").Filterable(ftb => ftb.Cell(cell => cell.ShowOperators(false)));
+            columns.ForeignKey(c => c.hydroponicTypeId, (System.Collections.IEnumerable)ViewData["hydroponicType"], "Id", "name").Visible(false);
+            columns.Bound(c => c.lastMeasureReceived).Format("{0:g}").Width(140).Title("[[[last measure]]]").MinScreenWidth(380).Groupable(false).Filterable(false).Filterable(ftb => ftb.Cell(cell => cell.ShowOperators(false)));
+            columns.Bound(c => c.reference).Title("ref.").HtmlAttributes(new { style = "text-align:right" }).HeaderHtmlAttributes(new { style = "text-align:right" }).Groupable(false).MinScreenWidth(380);
+            columns.Command(command => { command.Custom("[[[Details]]]").Click("showDetails"); command.Edit(); command.Destroy(); }).Width(220);
+        })
+        .ToolBar(toolbar =>
+        {
+            toolbar.Create();
+            //toolbar.Save();
+        })
+        .HtmlAttributes(new { style = "height: 80vh;" })
+        .Editable(editable => editable.Mode(GridEditMode.PopUp).Window(w => w.Width(700)).TemplateName("ProductionUnit"))
+        .Scrollable()
+        .Filterable(ftb => ftb.Mode(GridFilterMode.Row))
+        .Groupable()
+        //.ColumnMenu()
+        .Pageable(pageable => pageable
+            .Refresh(true)
+            .PageSizes(true)
+            .ButtonCount(5))
+        //.Events(events => events.DataBound("onDatabound"))
+        .DataSource(dataSource => dataSource
+            .Ajax()
+            .PageSize(20)
+            .ServerOperation(false)
+            .Model(model =>
+            {
+                model.Id(c => c.Id);
+                model.Field(c => c.Id).Editable(false);
+                model.Field(c => c.startDate).Editable(true);
+                model.Field(c => c.reference).Editable(true);
+                model.Field(c => c.locationLatitude).Editable(true);
+                model.Field(c => c.locationLongitude).Editable(true);
+                model.Field(c => c.version).Editable(true);
+                model.Field(c => c.info).Editable(true);
+                model.Field(c => c.lastMeasureReceived).Editable(false);
+                model.Field(c => c.productionUnitTypeId).DefaultValue(1);
+                model.Field(c => c.ownerId).DefaultValue(1);
+            })
+            .Events(events =>  events.Error("error_handler"))
+            .Create("Editing_Create", "ProductionUnits")
+            .Read("Editing_Read", "ProductionUnits")
+            .Update("Editing_Update", "ProductionUnits")
+            .Destroy("Editing_Destroy", "ProductionUnits")
+        )
+        )
+    </div>
+</div>
+
+    <script type="text/javascript">
+    function error_handler(e) {
+        if (e.errors) {
+            var measure = "Errors:\n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function() {
+                        measure += this + "\n";
+                    });
+                }
+            });
+            alert(measure);
+        }
+    }
+
+    function onDatabound(e) {
+        $("k-grid-ViewDetails").addClass("k-grid-button");
+    }
+
+    function showDetails(e) {
+        e.preventDefault();
+
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        window.location = window.location.origin + "/ProductionUnits/Details/" + dataItem.Id;
+    }
+</script>
+
+<style>
+        @@media screen and (max-width: 800px) {
+
+        .k-widget.k-window  {
+            width:100% !important;
+            height:90% !important;
+        }
+
+        }
+
+        .k-button {
+            background-color: #018001;
+            color: #ffffff;
+        }
+
+        .k-grid-add span.k-icon {
+            display:none;
+        }
+
+        .k-grid-edit span.k-icon {
+            display:none;
+        }
+
+        .k-grid-delete span.k-icon {
+            display:none;
+        }
+
+</style>
+

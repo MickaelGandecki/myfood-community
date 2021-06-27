@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 25">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+        stroke: #f3f6f8;
+      }
+
+      .cls-2 {
+        fill: #6c7a73;
+      }
+
+      .cls-3 {
+        stroke: none;
+      }
+
+      .cls-4 {
+        fill: none;
+      }
+    </style>
+  </defs>
+  <g id="Right_1" data-name="Right 1" transform="translate(-483 -720)">
+    <g id="Ellipse_71" data-name="Ellipse 71" class="cls-1" transform="translate(483 720)">
+      <circle class="cls-3" cx="12.5" cy="12.5" r="12.5"/>
+      <circle class="cls-4" cx="12.5" cy="12.5" r="12"/>
+    </g>
+    <g id="Fill_3195_Fill_3196_Fill_3197" data-name="Fill 3195 + Fill 3196 + Fill 3197" transform="translate(484.75 720.5)">
+      <path id="Fill_3196" data-name="Fill 3196" class="cls-2" d="M0,9H2V0H0Z" transform="translate(13.25 7.5)"/>
+      <path id="Fill_3197" data-name="Fill 3197" class="cls-2" d="M0,9,6,4.5,0,0Z" transform="translate(6.25 7.5)"/>
+    </g>
+  </g>
+</svg>

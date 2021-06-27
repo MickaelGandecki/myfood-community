@@ -1,0 +1,130 @@
+﻿@model PagedList.IPagedList<myfoodapp.Hub.Models.ExpandedUser>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+<script type="text/javascript">
+
+    function onCreateUserEventsClick() {
+        window.location = window.location.origin + "/Admin/CreateUser/";
+    }
+
+    function onBackToProductionUnitsClick() {
+        window.location = window.location.origin + "/ProductionUnits/Index/";
+    }
+
+</script>
+
+<div id="main-section-header" class="row">
+    <h2 id="title" class="col-md-3">[[[Users List]]]</h2>
+    <div style="clear:both;"></div>
+</div>
+
+<div id="productionUnits-grid" class="main-section-content row">
+    <div id="productionUnits-details" class="col-md-2">
+        <h3 class="section-header">[[[Manage Users]]]</h3>
+
+        <br />
+
+        <div id="managementButton">
+            <p>
+                @(Html.Kendo().Button()
+            .Name("creatNewUserButton")
+            .HtmlAttributes(new { @class = "toggleButton btn-block", @style = "height: 50px; color: #FFFFFF; background-color: #018001;" })
+            .Content("[[[Create new User]]]")
+            .Events(ev => ev.Click("onCreateUserEventsClick")))
+            </p>
+
+            <p>
+                @(Html.Kendo().Button()
+            .Name("backToProductionUnitsButton")
+            .HtmlAttributes(new { @class = "toggleButton btn-block", @style = "height: 50px; color: #FFFFFF; background-color: #018001;" })
+            .Content("[[[Back to Production Units]]]")
+            .Events(ev => ev.Click("onBackToProductionUnitsClick")))
+            </p>
+
+            <br />
+
+        </div>
+    </div>
+    <div id="grid-container" class="col-md-10" style="padding-top:20px; padding-bottom:40px">
+
+        @using (Html.BeginForm("Index", "Admin", FormMethod.Get))
+        {
+
+            <div class="form-group">
+                Search:&nbsp; @Html.TextBox("searchStringUserNameOrEmail", ViewBag.CurrentFilter as string)
+
+                <input type="submit" value="Search" />
+            </div>
+        }
+        <br />
+
+        <table class="table">
+            <tr>
+                <th style="font-weight:bold;">
+                    Email
+                </th>
+                <th>
+                    @*Locked Out*@
+                </th>
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LockoutEndDateUtc)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "EditUser", new { UserName = item.UserName }, new { @class = "EditUser" }) |
+                @if ((item.UserName.ToLower() != this.User.Identity.Name.ToLower()))
+                {
+                    @Html.ActionLink("Delete", "DeleteUser", new { UserName = item.UserName },
+            new { @class = "EditUser", onclick = "return confirm('Are you sure you wish to delete this user?');" })
+                }
+            </td>
+        </tr>
+            }
+
+
+        </table>
+        <br />
+        Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+            @Html.PagedListPager(Model,
+        page => Url.Action("Index",
+        new
+        {
+            page,
+            searchStringUserNameOrEmail = ViewBag.searchStringUserNameOrEmail,
+            currentFilter = ViewBag.CurrentFilter
+        }))
+        <hr />
+
+    </div>
+</div>
+
+<style>
+    a.EditUser {
+        color: #018001 !important;
+    }
+
+    .pagination > .active > a {
+        background-color: #018001 !important;
+        border-color: #018001 !important;
+    }
+
+    .pagination > li > a {
+        color: #000000 !important;
+    }
+</style>
+
+
+

@@ -1,0 +1,103 @@
+﻿@model myfoodapp.Hub.Models.UserAndRoles
+
+<script type="text/javascript">
+
+    function onBackToUserListClick() {
+        window.location = window.location.origin + "/Admin/Index/";
+    }
+
+</script>
+
+<div id="main-section-header" class="row">
+    <h2 id="title" class="col-md-3">[[[Edit Roles]]]</h2>
+    <div style="clear:both;"></div>
+</div>
+
+<div id="productionUnits-grid" class="main-section-content row">
+    <div id="productionUnits-details" class="col-md-2">
+        <h3 class="section-header">[[[Manage Users]]]</h3>
+
+        <br />
+
+        <div id="managementButton">
+            @*<p>
+                @(Html.Kendo().Button()
+            .Name("backToUserListButton")
+            .HtmlAttributes(new { @class = "toggleButton btn-block", @style = "height: 50px; color: #FFFFFF; background-color: #018001;" })
+            .Content("[[[Back to User List]]]")
+            .Events(ev => ev.Click("onBackToUserListClick")))
+            </p>
+
+            <br />*@
+
+        </div>
+    </div>
+    <div id="grid-container" class="col-md-10" style="padding-top:20px; padding-bottom:40px">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <br />
+            @Html.ValidationSummary(true,
+            "",
+            new { @class = "text-danger" })
+            <div>
+                @Html.ActionLink("Back",
+               "EditUser",
+               new { UserName = Model.UserName },
+               new { @class = "btn btn-default btn-action", @style = "color:black" })
+                <input type="submit" value="Add Role" class="btn btn-default btn-action" />
+                @Html.DropDownList("AddRole")
+            </div>
+            <br />
+
+            <table class="table">
+                <tr>
+                    <th>
+                        Existing Roles:
+                    </th>
+                    <th></th>
+                </tr>
+
+                @foreach (var item in Model.colUserRole)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.RoleName)
+                        </td>
+                        <td>
+                            @if (!((Model.UserName.ToLower() ==
+                            this.User.Identity.Name.ToLower()) &&
+                            item.RoleName == "Administrator") &&
+                            item.RoleName != "No Roles Found")
+                            {
+                                @Html.ActionLink("Delete", "DeleteRole",
+                                new { UserName = item.UserName, RoleName = item.RoleName },
+                                new
+                                {
+                                    @class = "EditUser",
+                                    onclick =
+                                "return confirm('Are you sure you wish to delete this role?');"
+                                })
+                            }
+                        </td>
+                    </tr>
+                }
+            </table>
+        }
+    </div>
+</div>
+
+<style>
+    a.EditUser {
+        color: #018001 !important;
+    }
+
+    .pagination > .active > a {
+        background-color: #018001 !important;
+        border-color: #018001 !important;
+    }
+
+    .pagination > li > a {
+        color: #000000 !important;
+    }
+</style>

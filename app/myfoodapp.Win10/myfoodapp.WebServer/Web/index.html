@@ -1,0 +1,812 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>myfoodpi Local Manager</title>
+
+    <link rel="icon" href="content/favicon.ico">
+
+    <!-- JS -->
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/jquery.csv.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap-datetimepicker.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="js/locales/bootstrap-datetimepicker.fr.js" charset="UTF-8"></script>
+
+    <!-- CSS -->  
+    <link href="css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="css/theme.min.css" rel="stylesheet">
+
+    <style style="display:none">
+      @font-face {
+            font-family: 'Glyphicons Halflings';
+            src: url('/fonts/glyphicons-halflings-regular.eot');
+            src: url('/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');
+      }
+
+      body {
+        padding-top: 50px;
+      }
+      .starter-template {
+        padding: 40px 15px;
+        text-align: center;
+      }
+
+      .navbar-image {
+        padding: 0 15px;
+      }
+      .navbar-image img {
+        max-height: 50px;
+      }
+
+      .graph {
+        max-width: 100%;
+      }
+
+     /* The switch - the box around the slider */
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+    }
+
+    /* Hide default HTML checkbox */
+    .switch input {
+        display: none;
+    }
+
+    /* The slider */
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    input:checked + .slider {
+        background-color: #219352;
+    }
+
+    input:focus + .slider {
+        box-shadow: 0 0 1px #219352;
+    }
+
+    input:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
+
+    .slider.round:before {
+        border-radius: 50%;
+    }
+
+    @media (max-width: 991px) {
+        .graph {
+          margin-left: -20px;
+        }
+    }
+
+    .footer {
+            background-color: #219352;
+            border-color: #219352;
+            padding-top: 48px;
+            padding-bottom: 48px;
+            color: #fff;
+            font-family: 'Open Sans';
+    }
+
+	.footerLogo{
+		width: 25%;
+	}
+
+	.gpl {
+	    float: left;
+		position: relative;
+		min-height: 1px;
+		padding-left: 15px;
+		padding-right: 15px;
+		width: 50%;
+		display: block;
+	}
+
+	.gpl a {
+		text-decoration: none;
+		moz-transition: color .2s;
+		-o-transition: color .2s;
+		-webkit-transition: color .2s;
+		transition: color .2s;
+		color: #c4decf;
+		background-color: transparent;
+
+	}
+
+	.gpl .gpl-text {
+	    padding: 0 15px;
+		position:absolute;
+		padding: 30px 0 0 15px;
+	}
+
+	.gpl .gpl-link {
+		cursor: default;
+	}
+
+    .niceButton {
+            background-color: #219352;
+            color: white;
+            display: block;
+            width: 100%;
+            height:50px;
+            padding-top:15px;
+            padding-bottom:15px;
+    }
+
+    </style>
+
+  </head>
+
+  <body style="background-color:#eeeeee">
+
+    <!-- NavBar -->
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+
+          <button type="button" class="navbar-toggle collapsed"  data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+
+          <a class="navbar-image pull-left" href="/">
+              <img src="content/logoMyFoodTiny.png"/>
+          </a>
+
+        </div>
+        <div id="navbar" class="collapse navbar-collapse" >
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Production Unit</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Jumbotron Title -->
+    <div class="jumbotron">
+      <div class="container">
+        <h1 class="hidden-xs">Local Production Unit Manager</h1>
+        <h2 class="visible-xs">Local Production Unit Manager</h2>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="container">
+        <div class="row">
+                <div class="col-xs-12 col-sm-6">
+                  <div class="panel panel-success">
+                    <div class="panel-heading">Water temperature</div>
+                    <div class="panel-body">
+                      <div id="waterTemp" class="graph"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-xs-12 col-sm-6">
+                  <div class="panel panel-success">
+                    <div class="panel-heading">Water pH</div>
+                    <div class="panel-body">
+                      <div id="pH" class="graph"></div>
+                    </div>
+                  </div>
+		         </div>
+        </div>
+        <div class="row">
+		         <div class="col-xs-12 col-sm-6">
+                  <div class="panel panel-success">
+                    <div class="panel-heading">Air Temperature</div>
+                    <div class="panel-body">
+                      <div id="airTemp" class="graph"></div>
+                    </div>
+		        </div>
+		        </div>
+		        <div class="col-xs-12 col-sm-6">
+                  <div class="panel panel-success">
+                    <div class="panel-heading">Air Humidity</div>
+                    <div class="panel-body">
+                      <div id="airHum" class="graph"></div>
+                    </div>
+                  </div>
+                  </div>
+           </div>
+        <div class="row">
+              <div class="col-xs-12 col-sm-6">
+                  <div class="panel panel-success">
+                      <div class="panel-heading">Settings</div>
+                      <div class="panel-body" style="padding:30px">
+                          <div class="row">
+                              <div class="col-xs-6 col-sm-6">
+                                  <div>Enable Debug Led</div>
+                                  <label class="switch">
+                                      <input id="enableDebugLedToogle" type="checkbox">
+                                      <span class="slider round"></span>
+                                  </label>
+                              </div>
+                              <div class="col-xs-6 col-sm-6">
+                                  <div>Enable Diagnostic Mode</div>
+                                  <label class="switch">
+                                      <input id="enableDiagnosticToogle" type="checkbox">
+                                      <span class="slider round"></span>
+                                  </label>
+                              </div>
+                          </div>
+                          <div class="row">
+                              <div class="col-xs-6 col-sm-6">
+                                  <div>Enable Humidity/Temp sensors</div>
+                                  <label class="switch">
+                                      <input id="enableHumidityTempToogle" type="checkbox">
+                                      <span class="slider round"></span>
+                                  </label>
+                              </div>
+                              <div class="col-xs-6 col-sm-6">
+                                  <div>Enable Sigfox</div>
+                                  <label class="switch">
+                                      <input id="enableSigfoxToogle" type="checkbox">
+                                      <span class="slider round"></span>
+                                  </label>
+                              </div>
+                          </div>                      
+                          <div id="hubProductionId">
+                              Hub ProductionId:<br/>
+                              <input id="strHubProductionId" type="text"><br/>
+                          </div>
+                          <br/>
+                          <button class="niceButton" onclick="onSaveSettingsClick()">Save Settings</button>
+                          <br/>
+                          <div for="clockDateTime">Internal Clock</div>
+                          <div id="currentClockDatetime">Current Clock:</div>
+
+                          <div class="form-group">
+                              <div class='input-group date' id='clockDatetime'>
+                                  <input type='text' class="form-control" />
+                                  <span class="input-group-addon">
+                                      <span class="glyphicon glyphicon-calendar"></span>
+                                  </span>
+                              </div>
+                          </div>
+
+                          <button class="niceButton" onclick="onSetClockClick()">Set Internal Clock</button>
+                      </div>
+                  </div>
+              </div>
+              <div class="col-xs-12 col-sm-6">
+                  <div class="panel panel-success">
+                      <div class="panel-heading">Admin Console</div>
+                      <div class="panel-body" style="padding:30px">
+                          <button class="niceButton" onclick="onSetpHTo7Click()">Set pH Calibration to 7</button>
+                          <button class="niceButton" onclick="onResetToFactoryClick()">Reset Calibration to Factory</button>
+                          <button class="niceButton" onclick="onDownloadMeasuresClick()">Download Measures</button>
+                          <button class="niceButton" onclick="onDownloadLogsClick()">Download Logs</button> 
+                          <button class="niceButton" onclick="onEraseMeasuresClick()">Erase Measures</button>
+                          <button class="niceButton" onclick="onEraseLogsClick()">Erase Logs</button>
+                          <button class="niceButton" onclick="onPerformSigfoxTestClick()">Perform Sigfox Test</button>
+                          <button class="niceButton" onclick="onRestartAppClick()">Restart App</button>
+                      </div>
+                  </div>
+              </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+  	<footer class="footer">
+      <div class="container">
+		<div class="row">
+			<div class="gpl">
+				<div class="gpl-link navbar-image pull-left">
+					<img src="content/gpl.png"/>
+				</div>
+				<div class="gpl-text">
+                    <p style="padding-top:20px">.:myfoodapp is licensed under a GPLv3:.</p>
+                    <p id="strPackageVersion"></p>
+				 </div>
+			</div>
+			<div class="footerlogo">
+				<p class="navbar-image pull-right">
+                   <img src="content/logoMyFoodFooter.png" />
+                    <br/>
+					contact@myfood.eu
+				</p>
+			</div>
+		</div>
+	  </div>
+    </footer>
+
+    <script type="text/javascript" src="js/dygraph-combined.js"></script>
+    <script>
+        var hostname = window.location.hostname;
+        var webApi = "http://" + hostname + ":5000/api/";  
+
+        $("#clockDatetime").datetimepicker({
+            format: "mm-dd-yyyy HH:ii:ss P",
+            ampm: true,
+            weekStart: 1,
+            todayBtn: 0,
+            autoclose: 1,
+            todayHighlight: 1,
+            startView: 1,
+            forceParse: 1,
+            showMeridian: 0
+        });
+
+        $("#enableSigfoxToogle").change(function () {
+            if (this.checked) {
+                $("#hubProductionId").hide();
+            }
+            if (!this.checked) {
+                $("#hubProductionId").show();
+            }
+        });
+
+        window.onload = function onLoad(e) {
+            getUserSettings();
+            getClockDateTime();
+
+            getpH();
+            getWaterTemp();
+            getAirTemp();
+            getAirHum();                 
+        };
+
+        function getClockDateTime() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", webApi + "getclockdatetime", true);
+
+            xhr.onload = function (e) {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        $('#currentClockDatetime').html("Current Clock: " + xhr.responseText);
+                    } else {
+                        console.error(xhr.statusText);
+                    }
+                }
+            };
+
+            xhr.send();
+        }
+
+        function onSetClockClick() {
+            var r = confirm("The internal clock will be changed, are you sure? ");
+            if (r == false) return;
+
+            var xhr = new XMLHttpRequest();
+            var strDate = $('#clockDatetime').data('date');
+            var date = Date.parse(strDate);
+
+            if (date == undefined)
+                return;
+            
+            xhr.open("PUT", webApi + "setclock/" + strDate, true);
+
+            xhr.onload = function (e) {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        $('#currentClockDatetime').html("Current Clock: " + strDate);
+                    } else {
+                        console.error(xhr.statusText);
+                    }
+                }
+            };
+
+            xhr.send();
+        }
+
+        function getUserSettings() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", webApi + "getusersettings", true);
+
+            xhr.onload = function (e) {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+
+                        var data = JSON.parse(xhr.responseText);
+
+                        $('#strPackageVersion').text(data.PackageVersion);
+
+                        if (data.isDiagnosticModeEnable === true)
+                            $('#enableDiagnosticToogle').attr('checked', true);
+                        else
+                            $('#enableDiagnosticToogle').attr('checked', false);
+
+                        if (data.isSigFoxComEnable === true)
+                            {
+                                $('#enableSigfoxToogle').attr('checked', true);
+                                $("#hubProductionId").hide();
+                            }
+                        else
+                            $('#enableSigfoxToogle').attr('checked', false);
+
+                        if (data.isDebugLedEnable === true)
+                            $('#enableDebugLedToogle').attr('checked', true);
+                        else
+                            $('#enableDebugLedToogle').attr('checked', false);
+
+                        if (data.isTempHumiditySensorEnable === true)
+                            $('#enableHumidityTempToogle').attr('checked', true);
+                        else
+                            $('#enableHumidityTempToogle').attr('checked', false);
+
+                        $("#strHubProductionId").val(data.productionSiteId);
+
+                    } else {
+                        console.error(xhr.statusText);
+                    }
+                }
+            };
+            
+            xhr.send();
+        };
+
+        function getpH() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", webApi + "data/type/pH", true);
+
+            xhr.onload = function (e) {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        var str = JSON.parse(xhr.responseText);
+                        var dataArr = $.csv.toArrays(str);
+
+                        for (i = 0; i < dataArr.length; i++) {
+                            dataArr[i][0] = new Date(dataArr[i][0]);
+                        }
+                        new Dygraph(document.getElementById("pH"), dataArr, { labels: ["Date", "pH"], includeZero: true });
+                    } else {
+                        console.error(xhr.statusText);
+                    }
+                }
+            };
+
+            xhr.send();
+        };
+
+        function getWaterTemp() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", webApi + "data/type/waterTemp", true);
+
+            xhr.onload = function (e) {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        var str = JSON.parse(xhr.responseText);
+                        var dataArr = $.csv.toArrays(str);
+
+                        for (i = 0; i < dataArr.length; i++) {
+                            dataArr[i][0] = new Date(dataArr[i][0]);
+                        }
+                        new Dygraph(document.getElementById("waterTemp"), dataArr, { labels: ["Date", "Celsius"], includeZero: true });
+                    } else {
+                        console.error(xhr.statusText);
+                    }
+                }
+            };
+
+            xhr.send();
+        };
+
+        function getAirTemp() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", webApi + "data/type/airTemp", true);
+
+            xhr.onload = function (e) {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        var str = JSON.parse(xhr.responseText);
+                        var dataArr = $.csv.toArrays(str);
+
+                        for (i = 0; i < dataArr.length; i++) {
+                            dataArr[i][0] = new Date(dataArr[i][0]);
+                        }
+                        new Dygraph(document.getElementById("airTemp"), dataArr, { labels: ["Date", "Celsius"], includeZero: true });
+                    } else {
+                        console.error(xhr.statusText);
+                    }
+                }
+            };
+
+            xhr.send();
+        };
+
+        function getAirHum() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", webApi + "data/type/airHum", true);
+
+            xhr.onload = function (e) {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        var str = JSON.parse(xhr.responseText);
+                        var dataArr = $.csv.toArrays(str);
+
+                        for (i = 0; i < dataArr.length; i++) {
+                            dataArr[i][0] = new Date(dataArr[i][0]);
+                        }
+                        new Dygraph(document.getElementById("airHum"), dataArr, { labels: ["Date", "%"], includeZero: true });
+                    } else {
+                        console.error(xhr.statusText);
+                    }
+                }
+            };
+
+            xhr.send();
+        };
+
+        function onRestartAppClick() {
+            var r = confirm("The app will be restarted, are you sure? ");
+            if (r == false) return;
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", webApi + "restartApp", true);
+            xhr.onload = function (e) {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+
+                    } else {
+                        console.error(xhr.statusText);
+                    }
+                }
+            };
+            xhr.send();
+        };
+
+        function onEraseLogsClick() {
+            var r = confirm("The logs will be erased, are you sure? ");
+            if (r == false) return;
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", webApi + "eraseLogs", true);
+            xhr.onload = function (e) {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+
+                    } else {
+                        console.error(xhr.statusText);
+                    }
+                }
+            };
+            xhr.send();
+        };
+
+        function onEraseMeasuresClick() {
+            var r = confirm("The measures will be erased, are you sure? ");
+            if (r == false) return;
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", webApi + "eraseMeasures", true);
+            xhr.onload = function (e) {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+
+                    } else {
+                        console.error(xhr.statusText);
+                    }
+                }
+            };
+            xhr.send();
+        };
+
+        function onSetpHTo7Click() {
+            var r = confirm("The pH sensor will be set at 7, are you sure? ");
+            if (r == false) return;
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", webApi + "setPHTo7", true);
+            xhr.onload = function (e) {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+
+                    } else {
+                        console.error(xhr.statusText);
+                    }
+                }
+            };
+            xhr.send();
+        };
+
+        function onPerformSigfoxTestClick() {
+            var r = confirm("A communication testing routine will be performed, are you sure? ");
+            if (r == false) return;
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", webApi + "performTest", true);
+            xhr.onload = function (e) {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+
+                    } else {
+                        console.error(xhr.statusText);
+                    }
+                }
+            };
+            xhr.send();
+        };
+
+        function onResetToFactoryClick() {
+            var r = confirm("The sensors calibration will be reset to factory, are you sure? ");
+            if (r == false) return;
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", webApi + "resetToFactory", true);
+            xhr.onload = function (e) {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+
+                    } else {
+                        console.error(xhr.statusText);
+                    }
+                }
+            };
+            xhr.send();
+        };
+
+        function onSaveSettingsClick() {
+            var xhr = new XMLHttpRequest(); 
+
+            var debugLedVal = $('#enableDebugLedToogle').prop('checked');
+            var diagVal = $('#enableDiagnosticToogle').prop('checked');
+            var sigfoxVal = $('#enableSigfoxToogle').prop('checked');  
+            var humTempVal = $('#enableHumidityTempToogle').prop('checked');
+
+            var strHubProductionId = $("#strHubProductionId").val();
+                     
+            xhr.open("PUT", webApi + 'putusersettings?args=' + debugLedVal + ";" + diagVal + ";" + sigfoxVal + ";" + humTempVal + "&id=" + strHubProductionId + "&quot", true);
+            xhr.onload = function (e) {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+
+                    } else {
+                        console.error(xhr.statusText);
+                    }
+                }
+            };
+            xhr.send();
+        };       
+
+        var headersMeasures = {
+            date: "Date",
+            sensor: "Sensor",
+            value: "Value"
+        };
+
+        var headersLogs = {
+            date: "Date",
+            type: "Type",
+            description: "Content",
+            stackCall: "StackCall"
+        };
+
+        function onDownloadMeasuresClick() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", webApi + "measuresFile", true);
+
+            xhr.onload = function (e) {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        var date = new Date();
+                        var year = date.getFullYear();
+                        var month = date.getMonth() + 1;
+                        var day = date.getDate();
+                        var fileName = "data_" + year + "-" + month + "-" + day;
+
+                        var data = JSON.parse(xhr.responseText);
+                        exportCSVFile(headersMeasures, data, fileName);
+
+                    } else {
+                        console.error(xhr.statusText);
+                    }
+                }
+            };
+
+            xhr.send();          
+        };
+
+        function onDownloadLogsClick() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", webApi + "logsFile", true);
+
+            xhr.onload = function (e) {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        var date = new Date();
+                        var year = date.getFullYear();
+                        var month = date.getMonth() + 1;
+                        var day = date.getDate();
+                        var fileName = "data_" + year + "-" + month + "-" + day;
+
+                        var data = JSON.parse(xhr.responseText);
+                        exportCSVFile(headersLogs, data, fileName);
+
+                    } else {
+                        console.error(xhr.statusText);
+                    }
+                }
+            };
+
+            xhr.send();
+        };
+
+        function convertToCSV(objArray) {
+            var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+            var str = '';
+
+            for (var i = 0; i < array.length; i++) {
+                var line = '';
+                for (var index in array[i]) {
+                    if (line != '') line += ';'
+
+                    line += array[i][index];
+                }
+
+                str += line + '\r\n';
+            }
+
+            return str;
+        }
+
+        function exportCSVFile(headers, items, fileTitle) {
+            if (headers) {
+                items.unshift(headers);
+            }
+
+            var jsonObject = JSON.stringify(items);
+
+            var csv = this.convertToCSV(jsonObject);
+
+            var exportedFilenmae = fileTitle + '.csv' || 'export.csv';
+
+            var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            if (navigator.msSaveBlob) { // IE 10+
+                navigator.msSaveBlob(blob, exportedFilenmae);
+            } else {
+                var link = document.createElement("a");
+                if (link.download !== undefined) { 
+                    var url = URL.createObjectURL(blob);
+                    link.setAttribute("href", url);
+                    link.setAttribute("download", exportedFilenmae);
+                    link.style.visibility = 'hidden';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
+            }
+        }
+    </script>
+
+  </body>
+</html>

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 14">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #ced2d0;
+      }
+    </style>
+  </defs>
+  <path id="envelope" class="cls-1" d="M3.6,2,9.345,7.12a1,1,0,0,0,1.33,0L16.423,2ZM18,3.273,12.006,8.614a3,3,0,0,1-3.992,0L2,3.254V12H18ZM2,0H18a2,2,0,0,1,2,2V12a2,2,0,0,1-2,2H2a2,2,0,0,1-2-2V2A2,2,0,0,1,2,0Z"/>
+</svg>

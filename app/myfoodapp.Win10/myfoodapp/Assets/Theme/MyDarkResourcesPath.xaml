@@ -1,0 +1,11 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:myfoodapp">
+    <SolidColorBrush x:Key="TelerikDateTimePickerSelectorButtonBackgroundBrush" Color="DarkRed" />
+    <SolidColorBrush x:Key="TelerikDateTimePickerSelectorItemSelectedBackgroundBrush" Color="DarkRed" />
+    <SolidColorBrush x:Key="SystemControlHighlightAccentBrush" Color="DarkRed" />
+    <SolidColorBrush x:Key="SystemControlHighlightBaseHighBrush" Color="DarkRed" />
+    <SolidColorBrush x:Key="SystemControlHighlightListAccentHighBrush" Color="DarkRed" />
+    <SolidColorBrush x:Key="SystemControlForegroundAccentBrush" Color="DarkRed" />
+</ResourceDictionary>

@@ -1,0 +1,470 @@
+﻿@model myfoodapp.Hub.Models.EventViewModel
+
+@{
+	ViewBag.Title = "Index";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/Content/Datepicker/datepicker.min.css" rel="stylesheet" type="text/css">
+<script src='~/Scripts/Grid/jquery-paginate.min.js'></script>
+<script src="~/Content/Datepicker/datepicker.min.js"></script>
+<script src="~/Content/Datepicker/datepicker.en.js"></script>
+
+<script type="text/javascript">
+	function onBackClick() {
+		var productionUnitId = $('#routeDataId').val();
+		window.location = window.location.origin + "/PioneerProductionSite/" + productionUnitId;
+	}
+</script>
+
+<input type="hidden" value='@ViewContext.RouteData.Values["id"]' id="routeDataId" />
+
+<div id="main-section-header">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-4">
+				<h2 class="title">[[[Production Units Management]]]</h2>
+			</div>
+			<div class="col-lg-8">
+				<div class="header-nav">
+					<div class="header-nav-item">
+						<label for="header-type">[[[Type]]]:</label>
+						<select id="header-type" onchange="sortByType()">
+							<option value="-1" selected>[[[All]]]</option>
+						</select>
+					</div>
+					<div class="header-nav-item">
+						<label for="header-date">[[[Order By Date]]]:</label>
+						<select id="header-date" onchange="sortByDate(this)">
+							<option value="0">[[[Asc]]]</option>
+							<option value="1" selected>[[[Desc]]]</option>
+						</select>
+					</div>
+					<div class="header-nav-item">
+						<a href="#" class="btn btn-primary btn-main" onclick="onBackClick()">[[[Back to Details]]]</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+<div id="main-section-body">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="table-container table-responsive">
+					<div class="table-height">
+						<table id="table" class="table table-striped">
+							<thead>
+								<tr>
+									<th>[[[Type]]]</th>
+									<th>[[[Date]]]</th>
+									<th>[[[Description]]]</th>
+									<th class="sort-alphabetical">[[[isOpen]]]</th>
+									<th class="sort-alphabetical">[[[Created by]]]</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
+					</div>
+					<div class="bottom-nav">
+						@*<div class="bottom-nav-pagination">
+								<div class="pages-count">
+									<select>
+										<option value="10">10</option>
+										<option value="20" selected>20</option>
+										<option value="30">30</option>
+									</select>
+								</div>
+							</div>*@
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="modal-edit" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30">
+						<path class="modal-close" d="M15,30A15,15,0,1,1,30,15,15.017,15.017,0,0,1,15,30ZM15,3A12,12,0,1,0,27,15,12.014,12.014,0,0,0,15,3Z" transform="translate(0 0)" />
+						<path class="modal-close" d="M9,0,5.561,3.44,2.121,0,0,2.121l3.44,3.44L0,9l2.121,2.121,3.44-3.44L9,11.121,11.121,9l-3.44-3.44,3.44-3.44Z" transform="translate(9.44 9.44)" />
+					</svg>
+				</button>
+				<h5 class="modal-title" id="modal-edit">[[[Edit]]]</h5>
+			</div>
+			<div class="modal-body">
+				<input name="event-id" type="hidden">
+				<h3 class="modal-group-title">[[[Date]]]</h3>
+				<div class="form-row form-group note-row">
+					<div class="year">
+						<input id="datepicker-here" data-language='en' data-date-format="M dd, yyyy" name="event-date" type="text" class="form-control text-center" placeholder="Jun 01, 2019">
+					</div>
+				</div>
+
+				<h3 class="modal-group-title">[[[Note]]]</h3>
+				<div class="form-row form-group">
+					<div class="description">
+						<input name="event-note" type="text" class="form-control" placeholder="Text">
+					</div>
+				</div>
+
+				<h3 class="modal-group-title">[[[isOpen]]]</h3>
+				<div class="switch">
+					<div class="checkbox checkbox-slider--b-flat checkbox-slider-md">
+						<label>
+							<input name="event-isopen" type="checkbox"><span></span>
+						</label>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="popup-textarea" class="description-label"></label>
+					<textarea name="event-description" class="form-control" id="popup-textarea" rows="5" placeholder="Detailed event description"></textarea>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary btn-popup" data-dismiss="modal">[[[Cancel]]]</button>
+				<button type="button" id="update-event" class="btn btn-primary btn-popup" onclick="updateEvent()">[[[Update]]]</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<script type="text/javascript">
+
+	$(document).ready(function () {
+		tableLoad();
+		GetEventTypes();
+	});
+
+	function sortByType() {
+		let typeId = $("#header-type").val();
+
+		if (typeId != -1) {
+
+			$("tbody").prepend($("tr[event-type='" + typeId + "']"));
+
+			$("tbody tr[event-type='" + typeId + "']").css("display", "table-row");
+			let countTr = $("tbody tr[event-type='" + typeId + "']").length;
+			if (countTr < 10) {
+				$(".page-navigation a").hide();
+			}
+			$("tbody tr:not([event-type='" + typeId + "'])").css("display", "none");
+		}
+		else {
+			sortByDate($("#header-date"))
+		}
+
+	}
+
+	jQuery.fn.sortElements = (function () {
+
+		var sort = [].sort;
+
+		return function (comparator, getSortable) {
+
+			getSortable = getSortable || function () { return this; };
+
+			var placements = this.map(function () {
+
+				var sortElement = getSortable.call(this),
+					parentNode = sortElement.parentNode,
+
+					// Since the element itself will change position, we have
+					// to have some way of storing its original position in
+					// the DOM. The easiest way is to have a 'flag' node:
+					nextSibling = parentNode.insertBefore(
+						document.createTextNode(''),
+						sortElement.nextSibling
+					);
+
+				return function () {
+
+					if (parentNode === this) {
+						throw new Error(
+							"You can't sort elements if any one is a descendant of another."
+						);
+					}
+
+					// Insert before flag:
+					parentNode.insertBefore(this, nextSibling);
+					// Remove flag:
+					parentNode.removeChild(nextSibling);
+
+				};
+
+			});
+
+			return sort.call(this, comparator).each(function (i) {
+				placements[i].call(getSortable.call(this));
+			});
+
+		};
+
+	})();
+
+	function sortByDate(el) {
+		$('tbody tr').sortElements(function (a, b) {
+			let sortType;
+			if ($(el).val() != 1) {
+				sortType = Date.parse($(a).find("[datatype=date]").text()) > Date.parse($(b).find("[datatype=date]").text()) ? 1 : -1;
+			}
+			else {
+				sortType = Date.parse($(a).find("[datatype=date]").text()) < Date.parse($(b).find("[datatype=date]").text()) ? 1 : -1;
+			}
+			return sortType;
+		});
+
+
+		$(".page-navigation").remove();
+
+		$("table").paginate({
+			limit: 13,
+			navigationWrapper: $(".bottom-nav")
+		});
+		$('a[data-direction="1"]').html("<img width=30 src='/Content/images/next.svg' alt=''>")
+		$('a[data-direction="-1"]').html("<img width=30 src='/Content/images/previous.svg' alt=''>")
+		$('a[data-first]').html("<img width=30 src='/Content/images/start.svg' alt=''>")
+		$('a[data-last]').html("<img width=30 src='/Content/images/end.svg' alt=''>")
+	}
+
+
+
+	function GetEventTypes() {
+		$("#event-type-tiles").empty();
+        $.ajax({
+            url: "@Url.Action("EventType_Read", "ProductionUnits")",
+            dataType: "json",
+            type: "POST",
+			success: function (result) {
+				var count = result.Data.length;
+				var div;
+				$.each(result.Data, function (key, value) {
+					$("#header-type").append(`<option value=${value.Id}>${value.name}</option>`);
+				});
+            }
+        });
+	}
+
+	function eventRead(el) {
+		let id = $(el).attr("event-id");
+		$.ajax({
+			url: "@Url.Action("Event_Read", "Events")",
+			dataType: "json",
+			data: { "id": id },
+			type: "POST",
+			success: function (result) {
+				$("[name='event-description']").val(result.details);
+				$("[name='event-id']").val(result.Id);
+				$("[name='event-note']").val(result.description);
+				var leg_1_datepicker = $('#datepicker-here').datepicker({
+					startDate: new Date(ToJavaScriptDate(result.date)),
+				}).data('datepicker').selectDate(new Date(ToJavaScriptDate(result.date)));
+
+				if (result.isOpen) {
+					$("[name='event-isopen']").prop('checked', true);
+				}
+				else {
+					$("[name='event-isopen']").prop('checked', false);
+				}
+				$("#edit").modal("show")
+
+
+            }
+        });
+	}
+
+	function updateEvent() {
+		var obj = {};
+		obj.Id = $("[name='event-id']").val();
+		obj.Note = $("[name='event-note']").val();
+		obj.CurrentDate = new Date($('#datepicker-here').data('datepicker').selectedDates[0]).toJSON();
+		obj.Details = $("[name='event-description']").val();
+		obj.IsOpen = $("[name='event-isopen']").prop('checked') ? true : false;
+		if (obj.Note === "")
+			$("[name=event-note]").css("border", "2px solid #e54848");
+		else
+			$("[name=event-note]").css("border", "2px solid #F3F6F8");
+		if (obj.CurrentDate == null)
+			$("#datepicker-here").css("border", "2px solid #e54848");
+		else
+			$("#datepicker-here").css("border", "2px solid #F3F6F8");
+
+		if (obj.Note === "" || obj.CurrentDate == null) {
+			return;
+		}
+
+        $.ajax({
+            url: "@Url.Action("Event_Update", "Events")",
+			dataType: "json",
+			data: obj,
+            type: "POST",
+			success: function (result) {
+				if (result) {
+
+					var options = { year: 'numeric', month: 'short', day: 'numeric' };
+					var date = new Date(obj.CurrentDate);
+
+					var tr = $("tr[event-id='" + obj.Id + "']");
+					tr.find("[datatype='date']").text(date.toLocaleDateString("en-US", options));
+					tr.find("[datatype='note']").text(obj.Note);
+					tr.find("[datatype='isopen']").text(obj.isOpen ? "Yes" : "No");
+
+					$("#edit").modal("hide");
+				}
+            }
+        });
+	}
+
+
+	function tableLoad() {
+		var d = $("tbody");
+		var id = $("#routeDataId").val(); 
+		d.empty();
+		 $.ajax({
+            url: "@Url.Action("Events_Read", "Events")",
+			 dataType: "json",
+			 type: "POST",
+			 data: { "id": id },
+			 success: function (result) {
+				 $.each(result.Data, function (key, value) {
+					 var tr = `
+							<tr event-id="${value.Id}" event-type="${value.eventType.Id}">
+								<td>${value.eventType.name}</td>
+								<td datatype=date>${ToJavaScriptDate(value.date)}</td>
+								<td datatype=note>${value.description}</td>
+								<td datatype=isopen>${value.isOpen ? 'Yes' : 'No'}</td>
+								<td>${value.createdBy}</td>
+								<td>
+									<a href="#" event-id="${value.Id}" id="edit-event" class="btn btn-primary" onclick="eventRead(this)">Edit</a>
+									<a href="#" event-id="${value.Id}" id="delete-event" class="btn btn-primary" onclick="Event_Destroy(this)">Delete</a>
+								</td>
+							</tr>`;
+					 d.append(tr);
+				 });
+				 $("table").paginate({
+					 limit: 13,
+					 navigationWrapper: $(".bottom-nav")
+				 });
+
+				 $('a[data-direction="1"]').html("<img width=30 src='/Content/images/next.svg' alt=''>")
+				 $('a[data-direction="-1"]').html("<img width=30 src='/Content/images/previous.svg' alt=''>")
+				 $('a[data-first]').html("<img width=30 src='/Content/images/start.svg' alt=''>")
+				 $('a[data-last]').html("<img width=30 src='/Content/images/end.svg' alt=''>")
+
+			}
+		});
+	}
+
+	function Event_Destroy(el) {
+		var currentEvent = $(el);
+		var id = currentEvent.attr("event-id");
+		$.ajax({
+			url: "@Url.Action("Event_Destroy", "Events")",
+			dataType: "json",
+			type: "POST",
+			data: { "id": id },
+			success: function (result) {
+				$("tr[event-id=" + id + "]").remove();
+
+				$(".page-navigation").remove();
+
+				$("table").paginate({
+					limit: 13,
+					navigationWrapper: $(".bottom-nav")
+				});
+
+				$('a[data-direction="1"]').html("<img width=30 src='/Content/images/next.svg' alt=''>")
+				$('a[data-direction="-1"]').html("<img width=30 src='/Content/images/previous.svg' alt=''>")
+				$('a[data-first]').html("<img width=30 src='/Content/images/start.svg' alt=''>")
+				$('a[data-last]').html("<img width=30 src='/Content/images/end.svg' alt=''>")
+			}
+		});
+	};
+
+	function ToJavaScriptDate(value) {
+		var pattern = /Date\(([^)]+)\)/;
+		var results = pattern.exec(value);
+		var dt = new Date(parseFloat(results[1]));
+
+		var options = { year: 'numeric', month: 'short', day: 'numeric' };
+
+		return dt.toLocaleDateString("en-US", options);
+	}
+
+
+	function error_handler(e) {
+		if (e.errors) {
+			var measure = "Errors:\n";
+			$.each(e.errors, function (key, value) {
+				if ('errors' in value) {
+					$.each(value.errors, function () {
+						measure += this + "\n";
+					});
+				}
+			});
+			alert(measure);
+		}
+	}
+</script>
+
+<style>
+	.datepickers-container .datepicker {
+		z-index: 2001;
+	}
+
+	.datepicker--cell.-selected-, .datepicker--cell.-selected-.-current- {
+		background: #2EA636;
+	}
+
+	.datepicker--cell.-focus- {
+		border: 1px solid #2EA636;
+	}
+
+	.datepicker--cell.-selected-.-focus-, .datepicker--cell.-selected-.-current-.-focus- {
+		background: #2EA636;
+	}
+
+	.datepicker--cell.-current- {
+		color: #2ea636;
+	}
+
+	.datepicker--day-name {
+		color: #e54848;
+	}
+
+	.page-navigation a, .page-navigation a[data-page] {
+		margin: 0 2px;
+		display: inline-block;
+		font-size: 15px;
+		background-color: white;
+		text-decoration: none;
+		font-weight: bold;
+	}
+
+		.page-navigation a[data-page] {
+			width: 30px;
+			height: 30px;
+			border-radius: 50%;
+			padding: 6px 11px;
+			color: #6c7a73
+		}
+
+		.page-navigation a[data-selected] {
+			background-color: #2EA636;
+			color: white;
+		}
+
+	@@media (max-width: 767px) {
+		.page-navigation {
+			margin: 10px;
+		}
+	}
+</style>
+

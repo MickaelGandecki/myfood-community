@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>myfood Hub Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" />
+
+    <link href="https://kendo.cdn.telerik.com/2017.2.621/styles/kendo.metro.min.css" rel="stylesheet" />
+    <link href="https://kendo.cdn.telerik.com/2017.2.621/styles/kendo.common.min.css" rel="stylesheet" />
+    <link href="https://kendo.cdn.telerik.com/2017.2.621/styles/kendo.metro.mobile.min.css" rel="stylesheet" />
+
+    <script src="https://kendo.cdn.telerik.com/2017.2.621/js/jquery.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2017.2.621/js/jszip.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2017.2.621/js/kendo.all.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2017.2.621/js/kendo.aspnetmvc.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2017.2.621/js/cultures/kendo.culture.fr-FR.min.js"></script>
+	
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="~/fonts/font-awesome/css/font-awesome.css">
+
+    <link rel="stylesheet" href="~/Content/Swiper/swiper.min.css">
+    <script src="~/Scripts/Swiper/swiper.jquery.js"></script>
+	@*<script src="~/Scripts/PopUp/jquery.magnific-popup.min.js"></script>*@
+
+    <link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
+    <link rel="icon" href="~/Content/favicon.ico" type="image/x-icon" />
+	@*<link rel="stylesheet" href="~/Content/PopUp/magnific-popup.css" />*@
+
+	<link rel="stylesheet" href="~/Content/slick.css" />
+	<link rel="stylesheet" href="~/Content/jquery.fancybox.min.css" />
+
+	<script src="~/Scripts/jquery.fancybox.min.js"></script>
+	<script src="~/Scripts/slick.min.js"></script>
+
+</head>
+<body>
+    <!-- Google Tag Manager -->
+    <noscript>
+        <iframe src="//www.googletagmanager.com/ns.html?id=GTM-6X92" height="0" width="0" style="display: none; visibility: hidden"></iframe>
+    </noscript>
+    <script>(function(w, d, s, l, i) { w[l] = w[l] || []; w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' }); var f = d.getElementsByTagName(s)[0], j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src = '//www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f); })(window, document, 'script', 'dataLayer', 'GTM-6X92');</script>
+    <!-- End Google Tag Manager -->
+    <div class="container-fluid">
+        <!--open container-->
+        <div class="row row-offcanvas row-offcanvas-left">
+            <!--open row-->
+            <div id="main-section" class="col-xs-12">
+                <!--open main column-->
+                @RenderBody()
+            </div><!--close main column-->
+        </div><!--close row-->
+    </div><!--close container-->
+
+    <script>
+        $(document).ready(function () {
+            $('[data-toggle=offcanvas]').click(function () {
+                $('.row-offcanvas').toggleClass('active');
+            });
+        });
+    </script>
+
+    <style type="text/css">
+		.subtitle a:link {
+			color: #ffffff;
+		}
+        /* normal link */
+		.subtitle a:visited {
+			color: #ffffff;
+		}
+        /* visited link */
+		.subtitle a:hover {
+			color: #ffffff;
+		}
+        /* mouse over link */
+		.subtitle a:active {
+			color: #ffffff;
+		}
+        /* selected link */
+    </style>
+
+</body>
+</html>

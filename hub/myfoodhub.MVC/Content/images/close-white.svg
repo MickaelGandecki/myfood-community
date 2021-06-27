@@ -1,0 +1,11 @@
+<svg id="Fill_778_Fill_779" data-name="Fill 778 + Fill 779" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+      }
+    </style>
+  </defs>
+  <path id="Fill_778" data-name="Fill 778" class="cls-1" d="M15,30A15,15,0,1,1,30,15,15.017,15.017,0,0,1,15,30ZM15,3A12,12,0,1,0,27,15,12.014,12.014,0,0,0,15,3Z" transform="translate(0 0)"/>
+  <path id="Fill_779" data-name="Fill 779" class="cls-1" d="M9,0,5.561,3.44,2.121,0,0,2.121l3.44,3.44L0,9l2.121,2.121,3.44-3.44L9,11.121,11.121,9l-3.44-3.44,3.44-3.44Z" transform="translate(9.44 9.44)"/>
+</svg>

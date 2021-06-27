@@ -1,0 +1,151 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script type="text/javascript">
+
+    function onBackClick() {
+        window.location = window.location.origin + "/ProductionUnits/";
+    }
+
+</script>
+
+<div id="main-section-header" class="row">
+    <h2 id="title" class="col-md-3">[[[Production Units List]]]</h2>
+    <div style="clear:both;"></div>
+</div>
+
+<div id="productionUnitOwner-grid" class="main-section-content row">
+    <div id="productionUnitOwner-details" class="col-md-2">
+        <h3 class="section-header">[[[Manage Production Units Owners from Pioneer Citizen Network]]]</h3>
+
+        <br />
+
+        <div id="managementButton">
+            <p>
+                @(Html.Kendo().Button()
+            .Name("backButton")
+            .HtmlAttributes(new { @class = "toggleButton btn-block", @style = "height: 50px; color: #FFFFFF; background-color: #018001;" })
+            .Content("[[[Back to Details]]]")
+            .Events(ev => ev.Click("onBackClick")))
+            </p>
+        </div>
+    </div>
+    <div id="grid-container" class="col-md-10" style="padding-bottom:40px">
+        @(Html.Kendo().Grid<myfoodapp.Hub.Models.ProductionUnitOwnerViewModel>()
+        .Name("grid")
+        .Columns(columns =>
+        {
+            columns.Bound(c => c.pioneerCitizenName).Width(175).Groupable(false);
+            columns.Bound(c => c.pioneerCitizenNumber).Width(40).Title("#").Groupable(false);
+            columns.ForeignKey(c => c.userId, (System.Collections.IEnumerable)ViewData["users"], "Id", "UserName").Title("[[[user]]]").Width(120);
+            columns.Bound(c => c.contactMail).Width(120).MinScreenWidth(380).Groupable(false).Filterable(false);
+            columns.Bound(c => c.office365Mail).Width(120).MinScreenWidth(380).Groupable(false).Filterable(false);
+            columns.Bound(c => c.phoneNumber).Width(120).MinScreenWidth(380).Groupable(false).Filterable(false);
+            columns.Bound(c => c.location).Width(140).MinScreenWidth(380).Groupable(false).Filterable(false);
+            columns.ForeignKey(c => c.languageId, (System.Collections.IEnumerable)ViewData["languages"], "Id", "name").Title("[[[lang]]]").Width(100).MinScreenWidth(380);
+            columns.ForeignKey(c => c.preferedMomentId, (System.Collections.IEnumerable)ViewData["preferedmoments"], "Id", "name").Visible(false);
+            //columns.Bound(c => c.notificationPushKey).Width(50).MinScreenWidth(380).Groupable(false).Filterable(false);
+            columns.Command(command => { command.Edit(); command.Destroy(); }).Width(220);
+        })
+        .ToolBar(toolbar =>
+        {
+            toolbar.Create();
+            //toolbar.Save();
+        })
+        .HtmlAttributes(new { style = "height: 80vh;" })
+        .Editable(editable => editable.Mode(GridEditMode.PopUp).Window(w => w.Width(700)).TemplateName("ProductionUnitOwner"))
+        .Scrollable()
+        .Filterable()
+        .Groupable()
+        //.ColumnMenu()
+        .Pageable(pageable => pageable
+            .Refresh(true)
+            .PageSizes(true)
+            .ButtonCount(5))
+        //.Events(events => events.DataBound("onDatabound"))
+        .DataSource(dataSource => dataSource
+            .Ajax()
+            .PageSize(20)
+            .ServerOperation(false)
+            .Model(model =>
+            {
+                model.Id(c => c.Id);
+                model.Field(c => c.Id).Editable(false);
+                model.Field(c => c.pioneerCitizenName).Editable(true);
+                model.Field(c => c.pioneerCitizenNumber).Editable(true);
+                model.Field(c => c.contactMail).Editable(true);
+                model.Field(c => c.office365Mail).Editable(true);
+                model.Field(c => c.location).Editable(true);
+                model.Field(c => c.notificationPushKey).Editable(false);
+                model.Field(c => c.preferedMomentId).DefaultValue(1);
+                model.Field(c => c.languageId).DefaultValue(1);
+            })
+            .Events(events =>  events.Error("error_handler"))
+            .Create("Editing_Create", "ProductionUnitOwner")
+            .Read("Editing_Read", "ProductionUnitOwner")
+            .Update("Editing_Update", "ProductionUnitOwner")
+            .Destroy("Editing_Destroy", "ProductionUnitOwner")
+        )
+        )
+    </div>
+</div>
+
+    <script type="text/javascript">
+    function error_handler(e) {
+        if (e.errors) {
+            var measure = "Errors:\n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function() {
+                        measure += this + "\n";
+                    });
+                }
+            });
+            alert(measure);
+        }
+    }
+
+    function onDatabound(e) {
+        $("k-grid-ViewDetails").addClass("k-grid-button");
+    }
+
+</script>
+
+<style>
+
+	@@media screen and (max-width: 800px) {
+
+		.k-widget.k-window  {
+			width:100% !important;
+			height:90% !important;
+		}
+
+	}
+
+	.k-button {
+		background-color: #018001;
+		color: #ffffff;
+	}
+
+	.k-grid-add span.k-icon {
+		display:none;
+	}
+
+	.k-grid-edit span.k-icon {
+		display:none;
+	}
+
+	.k-grid-delete span.k-icon {
+		display:none;
+	}
+	
+	@@media (max-width: 992px){
+		#main-section-header {
+			height: auto !important;
+			padding: 20px 0;
+		}
+	}
+</style>
+

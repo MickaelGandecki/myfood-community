@@ -1,0 +1,177 @@
+﻿<Page 
+    x:Class="myfoodapp.Views.AdvancedSettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:myfoodapp.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:telerik="using:Telerik.UI.Xaml.Controls.Grid"
+    xmlns:Primitives="using:Telerik.UI.Xaml.Controls.Primitives"
+    xmlns:common="using:myfoodapp.Common"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <common:BooleanToInvertBoolConverter x:Key="BooleanToInvertBoolConverter"/>
+    </Page.Resources>
+    <Grid Background="{StaticResource AppBrush}">
+        <Pivot x:Name="pivot" CanDrag="False">
+            <PivotItem Header="Advanced Settings" FontSize="8">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="15"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button x:Name="eraseLogsButton" Grid.Row="0" Style="{StaticResource OpenFormButton}" Content="Erase Logs">
+                        <Button.Flyout>
+                            <Flyout Placement="Right">
+                                <Grid MaxWidth="300">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.ColumnSpan="2" TextWrapping="Wrap" Margin="10" Text="Logs will be erased. Are you sure ?"/>
+                                    <AppBarButton Grid.Row="1" VerticalAlignment="Center" Icon="Accept" Label="Erase" Click="{x:Bind ViewModel.OnEraseLogsClicked}"/>
+                                    <AppBarButton Grid.Row="1" VerticalAlignment="Center" Grid.Column="1" Icon="Cancel" Label="Cancel" Click="{x:Bind ViewModel.CancelClicked}"/>
+                                </Grid>
+                            </Flyout>
+                        </Button.Flyout>
+                    </Button>
+                    <Button x:Name="eraseMeasuresButton" Grid.Row="1" Style="{StaticResource OpenFormButton}" Content="Erase Measures">
+                        <Button.Flyout>
+                            <Flyout Placement="Right">
+                                <Grid MaxWidth="300">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.ColumnSpan="2" TextWrapping="Wrap" Margin="10" Text="Measures will be erased. Are you sure ?"/>
+                                    <AppBarButton Grid.Row="1" VerticalAlignment="Center" Icon="Accept" Label="Erased" Click="{x:Bind ViewModel.OnEraseMeasuresClicked}"/>
+                                    <AppBarButton Grid.Row="1" VerticalAlignment="Center" Grid.Column="1" Icon="Cancel" Label="Cancel" Click="{x:Bind ViewModel.CancelClicked}"/>
+                                </Grid>
+                            </Flyout>
+                        </Button.Flyout>
+                    </Button>
+                    <Button x:Name="restartAppButton" Grid.Row="2" Style="{StaticResource OpenFormButton}" Content="Restart App">
+                        <Button.Flyout>
+                            <Flyout Placement="Right">
+                                <Grid MaxWidth="300">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.ColumnSpan="2" TextWrapping="Wrap" Margin="10" Text="myfoodapp will restart. Are you sure ?"/>
+                                    <AppBarButton Grid.Row="1" VerticalAlignment="Center" Icon="Accept" Label="Restart" Click="{x:Bind ViewModel.OnRestartAppClicked}"/>
+                                    <AppBarButton Grid.Row="1" VerticalAlignment="Center" Grid.Column="1" Icon="Cancel" Label="Cancel" Click="{x:Bind ViewModel.CancelClicked}"/>
+                                </Grid>
+                            </Flyout>
+                        </Button.Flyout>
+                    </Button>
+                    <Button x:Name="resetToHardwareToFactoryButton" Grid.Row="3" Style="{StaticResource OpenFormButton}" Content="Reset Hardware to Factory">
+                        <Button.Flyout>
+                            <Flyout Placement="Right">
+                                <Grid MaxWidth="300">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.ColumnSpan="2" TextWrapping="Wrap" Margin="10" Text="Sensors will be resetted and application will restart. Are you sure ?"/>
+                                    <AppBarButton Grid.Row="1" VerticalAlignment="Center" Icon="Accept" Label="Restart" Click="{x:Bind ViewModel.OnResetHardwareClicked}"/>
+                                    <AppBarButton Grid.Row="1" VerticalAlignment="Center" Grid.Column="1" Icon="Cancel" Label="Cancel" Click="{x:Bind ViewModel.CancelClicked}"/>
+                                </Grid>
+                            </Flyout>
+                        </Button.Flyout>
+                    </Button>
+                    
+                    <StackPanel Grid.Column="2" Orientation="Vertical">
+                        <TextBlock FontSize="23" FontWeight="Bold" Text="System Information"/>
+                        <TextBlock FontSize="23" Text="{x:Bind ViewModel.PackageVersion}"/>
+                        <TextBlock FontSize="23" Text="{x:Bind ViewModel.FreeDiskSpace}"/>
+                    </StackPanel>
+
+                    <Grid Margin="2" Grid.Row="1" Grid.RowSpan="3" Grid.Column="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="15"/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        
+                        <TextBlock Grid.Row="0" TextWrapping="Wrap" Style="{StaticResource TitleText}" Text="Enable Debug Led"/>
+                        <ToggleSwitch Grid.Row="0" Grid.Column="1" IsOn="{x:Bind ViewModel.IsDebugLedEnable, Mode=TwoWay}"/>
+
+                        <TextBlock Grid.Row="0" Grid.Column="3" TextWrapping="Wrap" Style="{StaticResource TitleText}" Text="Enable Sigfox Com"/>
+                        <ToggleSwitch Grid.Row="0" Grid.Column="4" IsOn="{x:Bind ViewModel.IsSigFoxComEnable, Mode=TwoWay}"/>
+
+                        <TextBlock Grid.Row="1" TextWrapping="Wrap" Style="{StaticResource TitleText}" Text="Enable Temp/Hum Sensors"/>
+                        <ToggleSwitch Grid.Row="1" Grid.Column="1" IsOn="{x:Bind ViewModel.IsTempHumiditySensorEnable, Mode=TwoWay}"/>
+
+                        <TextBlock Grid.Row="1" TextWrapping="Wrap" Grid.Column="3" Style="{StaticResource TitleText}" Text="Enable Diagnostic Mode"/>
+                        <ToggleSwitch Grid.Row="1" Grid.Column="4" IsOn="{x:Bind ViewModel.IsDiagnosticModeEnable, Mode=TwoWay}"/>
+
+                        <Button x:Name="performSigfoxTestButton" Grid.Row="3" Grid.ColumnSpan="5" Style="{StaticResource OpenFormButton}" Content="Perform Sigfox Test">
+                            <Button.Flyout>
+                                <Flyout Placement="Right">
+                                    <Grid MaxWidth="300">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.ColumnSpan="2" TextWrapping="Wrap" Margin="10" Text="A Sigfox integration test will be performed. Are you sure ?"/>
+                                        <AppBarButton Grid.Row="1" VerticalAlignment="Center" Icon="Accept" Label="Start" Click="{x:Bind ViewModel.OnPerformSigfoxTestClicked}"/>
+                                        <AppBarButton Grid.Row="1" VerticalAlignment="Center" Grid.Column="1" Icon="Cancel" Label="Cancel" Click="{x:Bind ViewModel.CancelClicked}"/>
+                                    </Grid>
+                                </Flyout>
+                            </Button.Flyout>
+                        </Button>
+                    </Grid>
+                </Grid>
+            </PivotItem>
+        </Pivot>
+        <Primitives:RadBusyIndicator IndicatorAnimationStyle="{StaticResource DefaultIndicatorAnimation}" IsActive="{x:Bind ViewModel.IsBusy, Mode=TwoWay}">
+            <Primitives:RadBusyIndicator.ContentTemplate>
+                <DataTemplate>
+
+                </DataTemplate>
+            </Primitives:RadBusyIndicator.ContentTemplate>
+        </Primitives:RadBusyIndicator>
+    </Grid>
+    <Page.BottomAppBar>
+        <CommandBar x:Name="cmdBar" Background="Green" IsOpen="False">
+            <AppBarButton Foreground="White" Icon="Save"  Label="Save"  IsEnabled="{x:Bind ViewModel.IsBusy, Converter={StaticResource BooleanToInvertBoolConverter}}" Click="{x:Bind ViewModel.OnSaveClicked}"/>
+            <AppBarButton Foreground="White" Icon="Back"  Label="Back" IsEnabled="True" Click="{x:Bind ViewModel.OnBackClicked}"/>
+        </CommandBar>
+    </Page.BottomAppBar>
+</Page>

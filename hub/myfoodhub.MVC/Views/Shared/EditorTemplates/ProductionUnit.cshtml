@@ -1,0 +1,110 @@
+@model myfoodapp.Hub.Models.ProductionUnitViewModel
+
+<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+<div style="margin:20px">
+
+    @Html.HiddenFor(model => model.Id)
+    @Html.HiddenFor(model => model.lastMeasureReceived)
+
+    <div style="margin:10px">
+        @Html.LabelFor(model => model.info)
+        <br />
+        @Html.Kendo().TextBoxFor(model => model.info)
+    </div>
+
+    <div style="margin:10px">
+        @Html.LabelFor(model => model.owner)
+        <br />
+        @Html.EditorFor(model => model.ownerId)
+    </div>
+
+    <div style="margin:10px">
+        @Html.LabelFor(model => model.productionUnitType)
+        <br />
+        @Html.EditorFor(model => model.productionUnitTypeId)
+    </div>
+
+    <div style="margin:10px">
+        @Html.LabelFor(model => model.startDate)
+        <br />
+        @Html.Kendo().DatePickerFor(model => model.startDate).Name("startDate")
+    </div>
+
+    <div style="margin:10px">
+        @Html.LabelFor(model => model.hydroponicType)
+        <br />
+        @Html.EditorFor(model => model.hydroponicTypeId)
+    </div>
+
+    <div style="margin:10px">
+        @Html.LabelFor(model => model.productionUnitStatus)
+        <br />
+        @Html.EditorFor(model => model.productionUnitStatusId)
+    </div>
+
+    <div style="margin:10px">
+        @Html.LabelFor(model => model.locationLatitude)
+        <br />
+        @Html.EditorFor(model => model.locationLatitude)
+    </div>
+
+    <div style="margin:10px">
+        @Html.LabelFor(model => model.locationLongitude)
+        <br />
+        @Html.EditorFor(model => model.locationLongitude)
+    </div>
+
+    <div style="margin:10px">
+        @Html.LabelFor(model => model.reference)
+        <br />
+        @Html.Kendo().TextBoxFor(model => model.reference)
+    </div>
+
+    <div style="margin:10px">
+        @Html.LabelFor(model => model.version)
+        <br />
+        @Html.Kendo().TextBoxFor(model => model.version)
+    </div>
+
+</div>
+
+<style>
+    .toggle.btn{
+         width: 40px !important;
+         height: 20px !important;
+         min-width: 40px;
+         min-height: 20px;
+
+    }
+
+   .k-textbox {
+          width: 100%;
+    }
+
+    .k-datepicker {
+          width: 100%;
+    }
+
+    .k-dropdown {
+          width: 100%;
+    }
+
+    k-datepicker  {
+          width: 100%;
+    }
+
+    .k-grid-update span.k-icon {
+        display: none;
+    }
+
+    .k-edit-form-container {
+        width: 100%;
+    }
+
+    .k-grid-cancel span.k-icon {
+        display: none;
+    }
+</style>

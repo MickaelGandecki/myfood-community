@@ -1,0 +1,110 @@
+﻿@model IEnumerable<myfoodapp.Hub.Models.RecognitionRecord>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/Content/lightbox/lightbox.css" rel="stylesheet" />
+<script src="~/Scripts/lightbox/lightbox.js"></script>
+
+<div id="main-section-header" class="row">
+    <h2 id="title" class="col-md-3">[[[Performance &amp; Health (Preview)]]]</h2>
+    <div style="clear:both;"></div>
+</div>
+
+<div id="productionUnits-grid" class="main-section-content row">
+    <div id="productionUnits-details" class="col-md-2">
+        <h3 class="section-header">[[[Manage Recognition Records from your Production Units]]]</h3>   
+    </div>
+    <div id="grid-container" class="col-md-10" style="padding-bottom:40px">
+        @(Html.Kendo().Grid<myfoodapp.Hub.Models.RecognitionRecordViewModel>()
+        .Name("grid")
+        .Columns(columns =>
+        {
+            columns.Bound(c => c.date).Format("{0:d}").Width(100).Title("[[[date]]]");
+            columns.Bound(c => c.token).Width(280).MinScreenWidth(380);
+            columns.ForeignKey(c => c.productionLevelId, (System.Collections.IEnumerable)ViewData["ProductionLevels"], "Id", "name").Title("[[[prod. lvl]]]").Width(100).MinScreenWidth(380);
+            columns.Bound(c => c.dailyProduction).Width(100).Title("[[[daily production]]]");
+            columns.ForeignKey(c => c.productionLevelId, (System.Collections.IEnumerable)ViewData["HealthLevels"], "Id", "name").Title("[[[health. lvl]]]").Width(100).MinScreenWidth(380);
+            columns.Bound(c => c.imagePath).Title("image").ClientTemplate("<a class='example - image - link' href='" + Url.Content("~/Content/Pictures/RecognitionPictures/") + "#=imagePath#' data-lightbox='example - 1'><img class='example - image' src='" + Url.Content("~/Content/Pictures/RecognitionPictures/") + "#=imagePath#' alt='#=imagePath #' Title='#=imagePath #' height='120' width='80'/></a>").Width(80);
+            //columns.Command(command => command.Custom("Details").Click("showDetails")).Width(70);
+            //columns.Command(command => { command.Edit(); command.Destroy(); }).Width(250);
+            //columns.Command(command => { command.Destroy(); }).Width(250);
+        })
+        //.ToolBar(toolbar =>
+        //{
+        //    toolbar.Create();
+        //    toolbar.Save();
+        //})
+        .HtmlAttributes(new { style = "height: 80vh" })
+        //.Editable(editable => editable.Mode(GridEditMode.PopUp).TemplateName("ProductionUnitEditTemplate"))
+        //.Editable(editable => editable.Mode(GridEditMode.InCell))
+        .Scrollable()
+        .Filterable()
+        .Groupable()
+        .ColumnMenu()
+        //.Pageable(pageable => pageable
+        //    .Refresh(true)
+        //    .PageSizes(true)
+        //    .ButtonCount(5))
+        //.Events(events => events.DataBound("onDatabound"))
+        .DataSource(dataSource => dataSource
+            .Ajax()
+            //.PageSize(15)
+            .ServerOperation(false)
+            .Model(model =>
+            {
+                model.Id(c => c.Id);
+                model.Field(c => c.Id).Editable(false);
+                model.Field(c => c.date).Editable(false);
+                model.Field(c => c.token).Editable(false);
+            })
+            .Events(events =>  events.Error("error_handler"))
+            //.Create("Editing_Create", "ProductionUnits")
+            .Read("Editing_Read", "PerformanceHealth")
+        //.Update("Editing_Update", "ProductionUnits")
+        //.Destroy("Editing_Destroy", "ProductionUnits")
+        )
+        )
+    </div>
+</div>
+
+<script type="text/javascript">
+    function error_handler(e) {
+        if (e.errors) {
+            var measure = "Errors:\n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function() {
+                        measure += this + "\n";
+                    });
+                }
+            });
+            alert(measure);
+        }
+    }
+
+    function onDatabound(e) {
+        $("k-grid-ViewDetails").addClass("k-grid-button");
+    }
+
+    function showDetails(e) {
+        e.preventDefault();
+
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));        
+        window.location = window.location.origin + "/PerformanceHealth/Details/" + dataItem.Id;
+    }
+</script>
+
+<style>
+        .k-button {
+        color: #018001;
+        background-color: #018001;
+        }
+
+        .k-grouping-header {
+        display:none;
+        }
+</style>
+   

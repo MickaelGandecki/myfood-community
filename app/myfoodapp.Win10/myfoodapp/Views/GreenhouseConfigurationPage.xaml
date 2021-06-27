@@ -1,0 +1,131 @@
+﻿<Page
+    x:Class="myfoodapp.Views.GreenhouseConfigurationPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:myfoodapp.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <StateTrigger IsActive="{x:Bind ViewModel.DefaultState, Mode=OneWay}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="defaultGrid.Visibility" Value="Visible" />
+                        <Setter Target="ghSizeGrid.Visibility" Value="Collapsed" />
+                        <Setter Target="tankNumberGrid.Visibility" Value="Collapsed" />
+                        <Setter Target="zipgrowTowerGrid.Visibility" Value="Collapsed" />
+                        <Setter Target="zipgrowTowerGrid.Visibility" Value="Collapsed" />
+                        <Setter Target="startButton.Visibility" Value="Visible" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <StateTrigger IsActive="{x:Bind ViewModel.GHSizeState, Mode=OneWay}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="defaultGrid.Visibility" Value="Collapsed" />
+                        <Setter Target="ghSizeGrid.Visibility" Value="Visible" />
+                        <Setter Target="tankNumberGrid.Visibility" Value="Collapsed" />
+                        <Setter Target="zipgrowTowerGrid.Visibility" Value="Collapsed" />
+                        <Setter Target="startButton.Visibility" Value="Collapsed" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <StateTrigger IsActive="{x:Bind ViewModel.TankNumberState, Mode=OneWay}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="defaultGrid.Visibility" Value="Collapsed" />
+                        <Setter Target="ghSizeGrid.Visibility" Value="Collapsed" />
+                        <Setter Target="tankNumberGrid.Visibility" Value="Visible" />
+                        <Setter Target="zipgrowTowerGrid.Visibility" Value="Collapsed" />
+                        <Setter Target="startButton.Visibility" Value="Collapsed" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <StateTrigger IsActive="{x:Bind ViewModel.ZipgrowNumberState, Mode=OneWay}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="defaultGrid.Visibility" Value="Collapsed" />
+                        <Setter Target="ghSizeGrid.Visibility" Value="Collapsed" />
+                        <Setter Target="tankNumberGrid.Visibility" Value="Collapsed" />
+                        <Setter Target="zipgrowTowerGrid.Visibility" Value="Visible" />
+                        <Setter Target="startButton.Visibility" Value="Collapsed" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <Grid x:Name="defaultGrid" Visibility="Collapsed">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.ColumnSpan="2" Style="{StaticResource ModuleTitleText}" HorizontalAlignment="Left" Text="Current Greenhouse Configuration"/>
+            <Image Grid.Row="1" Grid.RowSpan="3" Margin="50" Source="/Assets/Home/gh.jpg"/>
+            
+        </Grid>
+        <Grid x:Name="ghSizeGrid" Visibility="Collapsed">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Row="1" Grid.Column="0" Content="14m²" Style="{StaticResource OpenFormButton}" Click="{x:Bind ViewModel.OnGHSizeSelectionClicked}"/>
+            <Button Grid.Row="1" Grid.Column="1" Content="22m²" Style="{StaticResource OpenFormButton}" Click="{x:Bind ViewModel.OnGHSizeSelectionClicked}"/>
+            <Button Grid.Row="1" Grid.Column="2" Content="Other" Style="{StaticResource OpenFormButton}" Click="{x:Bind ViewModel.OnGHSizeSelectionClicked}"/>
+            <TextBlock Grid.ColumnSpan="2" Style="{StaticResource ModuleTitleText}" HorizontalAlignment="Left" Text="Select the size of your Greenhouse"/>
+        </Grid>
+        <Grid x:Name="tankNumberGrid" Visibility="Collapsed">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Row="1" Grid.Column="0" Content="1 tank" Style="{StaticResource OpenFormButton}" Click="{x:Bind ViewModel.OnTankSelectionClicked}"/>
+            <Button Grid.Row="1" Grid.Column="1" Content="2 tanks" Style="{StaticResource OpenFormButton}" Click="{x:Bind ViewModel.OnTankSelectionClicked}"/>
+            <Button Grid.Row="1" Grid.Column="2" Content="3 tanks" Style="{StaticResource OpenFormButton}" Click="{x:Bind ViewModel.OnTankSelectionClicked}"/>
+            <TextBlock Grid.ColumnSpan="2" Style="{StaticResource ModuleTitleText}" HorizontalAlignment="Left" Text="Select the number of Fish Tanks installed"/>
+        </Grid>
+        <Grid x:Name="zipgrowTowerGrid" Visibility="Collapsed">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Row="1" Grid.Column="0" Content="12 towers" Style="{StaticResource OpenFormButton}" Click="{x:Bind ViewModel.OnTowerSelectionClicked}"/>
+            <Button Grid.Row="1" Grid.Column="1" Content="24 towers" Style="{StaticResource OpenFormButton}" Click="{x:Bind ViewModel.OnTowerSelectionClicked}"/>
+            <Button Grid.Row="1" Grid.Column="2" Content="36 towers" Style="{StaticResource OpenFormButton}" Click="{x:Bind ViewModel.OnTowerSelectionClicked}"/>
+            <TextBlock Grid.ColumnSpan="2" Style="{StaticResource ModuleTitleText}" HorizontalAlignment="Left" Text="Select the number of Zipgrow Towers installed"/>
+        </Grid>
+    </Grid>
+    <Page.BottomAppBar>
+        <CommandBar x:Name="cmdBar" Background="Green" IsOpen="False">
+            <AppBarButton x:Name="startButton" Foreground="White" Icon="NewWindow" Label="Start Config" IsEnabled="True" Click="{x:Bind ViewModel.OnStartClicked}"/>
+            <AppBarButton Foreground="White" Icon="Back"  Label="Back" IsEnabled="True" Click="{x:Bind ViewModel.OnBackClicked}"/>
+        </CommandBar>
+    </Page.BottomAppBar>
+</Page>

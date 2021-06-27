@@ -1,0 +1,87 @@
+﻿<Page 
+    x:Class="myfoodapp.Views.ORPCalibrationPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:myfoodapp.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:telerik="using:Telerik.UI.Xaml.Controls.Grid"
+    xmlns:Primitives="using:Telerik.UI.Xaml.Controls.Primitives"
+    mc:Ignorable="d">
+
+    <Grid Background="{StaticResource AppBrush}">
+        <Pivot x:Name="pivot" CanDrag="False">
+            <PivotItem Header="ORP Calibration" FontSize="8">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition Height="0.5*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button x:Name="ORPCalibrationat225Button" Grid.Row="0" Style="{StaticResource OpenFormButton}" Content="[Recommanded] Set ORP Calibration at 225">
+                        <Button.Flyout>
+                            <Flyout Placement="Right">
+                                <Grid MaxWidth="300">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.ColumnSpan="2" TextWrapping="Wrap" Margin="10" Text="Clean the sensor and put it on a ORP 225 calibration solution. Then confirm calibration"/>
+                                    <AppBarButton Grid.Row="1" VerticalAlignment="Center" Icon="Accept" Label="Confirm Calibration" Click="{x:Bind ViewModel.OnORPCalibrationat225Clicked}"/>
+                                    <AppBarButton Grid.Row="1" VerticalAlignment="Center" Grid.Column="1" Icon="Cancel" Label="Cancel" Click="{x:Bind ViewModel.CancelClicked}"/>
+                                </Grid>
+                            </Flyout>
+                        </Button.Flyout>
+                    </Button>
+
+                    <Button x:Name="resetSensorToFactory" Grid.Row="0" Grid.Column="1" Style="{StaticResource OpenFormButton}" Content="Reset Calibration to Factory settings">
+                        <Button.Flyout>
+                            <Flyout Placement="Right">
+                                <Grid MaxWidth="300">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.ColumnSpan="2" TextWrapping="Wrap" Margin="10" Text="The sensor will lost all the current calibrations"/>
+                                    <AppBarButton Grid.Row="1" VerticalAlignment="Center" Icon="Accept" Label="Reset Calibration" Click="{x:Bind ViewModel.OnResetCalibrationClicked}"/>
+                                    <AppBarButton Grid.Row="1" VerticalAlignment="Center" Grid.Column="1" Icon="Cancel" Label="Cancel" Click="{x:Bind ViewModel.CancelClicked}"/>
+                                </Grid>
+                            </Flyout>
+                        </Button.Flyout>
+                    </Button>
+
+                    <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock FontSize="23" FontWeight="Bold" Text="Last Calibration:"/>
+                        <TextBlock FontSize="23" Text="{Binding LastCalibrationDate.Result}" Margin="5,0,0,0"/>
+                    </StackPanel>
+                    
+                </Grid>
+            </PivotItem>
+        </Pivot>
+        <Primitives:RadBusyIndicator IndicatorAnimationStyle="{StaticResource DefaultIndicatorAnimation}" IsActive="{x:Bind ViewModel.IsBusy, Mode=TwoWay}">
+            <Primitives:RadBusyIndicator.ContentTemplate>
+                <DataTemplate>
+
+                </DataTemplate>
+            </Primitives:RadBusyIndicator.ContentTemplate>
+        </Primitives:RadBusyIndicator>
+    </Grid>
+    <Page.BottomAppBar>
+        <CommandBar x:Name="cmdBar" Background="Green" IsOpen="False">
+            <AppBarButton Foreground="White" Icon="Back"  Label="Back" IsEnabled="True" Click="{x:Bind ViewModel.OnBackClicked}"/>
+        </CommandBar>
+    </Page.BottomAppBar>
+</Page>

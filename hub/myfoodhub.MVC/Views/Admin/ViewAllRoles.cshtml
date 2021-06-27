@@ -1,0 +1,43 @@
+﻿@model IEnumerable<myfoodapp.Hub.Models.Role>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+<p>
+    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default btn-action" })
+    @Html.ActionLink("Add Role", "AddRole", null, new { @class = "btn btn-default btn-action" })
+</p>
+<table class="table">
+    <tr>
+        <th style="font-weight:bold;">
+           Existing Role
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.RoleName)
+            </td>
+            <td>
+                @if (item.RoleName.ToLower() != "administrator")
+                {
+                    @Html.ActionLink("Delete", "DeleteUserRole",
+                   new { RoleName = item.RoleName },
+                   new
+                   {
+                       @class = "EditUser",
+                       onclick =
+                   "return confirm('Are you sure you wish to delete this role?');"
+                   })
+                }
+            </td>
+
+        </tr>
+    }
+</table>
+

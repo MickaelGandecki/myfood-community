@@ -1,0 +1,305 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>myfood Hub Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+    <link href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" />
+
+    <link href="https://kendo.cdn.telerik.com/2017.2.621/styles/kendo.metro.min.css" rel="stylesheet" />
+    <link href="https://kendo.cdn.telerik.com/2017.2.621/styles/kendo.common.min.css" rel="stylesheet" />
+    <link href="https://kendo.cdn.telerik.com/2017.2.621/styles/kendo.metro.mobile.min.css" rel="stylesheet" />
+
+    <script src="~/Scripts/jquery.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2017.2.621/js/jszip.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2017.2.621/js/kendo.all.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2017.2.621/js/kendo.aspnetmvc.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2017.2.621/js/cultures/kendo.culture.fr-FR.min.js"></script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async='async'></script>
+    <script src="~/Scripts/jquery.fancybox.min.js"></script>
+
+    <link rel="stylesheet" href="~/fonts/font-awesome/css/font-awesome.css">
+    <link rel="stylesheet" href="~/Content/jquery.fancybox.min.css" />
+
+    <link rel="stylesheet" href="~/Content/Swiper/swiper.min.css">
+    <script src="~/Scripts/Swiper/swiper.jquery.js"></script>
+
+    <link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
+    <link rel="icon" href="~/Content/favicon.ico" type="image/x-icon" />
+    <link rel="manifest" href="~/manifest.txt">
+    <style>
+        
+        
+    </style>
+</head>
+<body>
+	@using Microsoft.AspNet.Identity
+
+	<!-- End Google Tag Manager -->
+	@*<div class="container-fluid" style="background-color:aqua">
+
+		<!--open container-->
+		<div  class="row row-offcanvas row-offcanvas-left" style="background-color:orangered">
+			<!--open row-->*@
+	<div id="nav-section" class="col-md-12 column">
+		<!--open nav column-->
+		<div class="navbar-default">
+			<button id="toggle-button" type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+				<span id="test" class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+		</div>
+		<h1 id="dash-logo" class="center-block" style="font-size: 20px">
+			<a href="@(Url.Action("Index", "Home"))">
+				<img height="60" src="~/Content/images/myfood-logo.svg" />
+			</a>
+		</h1>
+		<div class="collapse navbar-collapse" id="sidebar-nav" role="navigation">
+			<ul class="nav">
+				@if (Request.IsAuthenticated)
+				{
+					var manager = new UserManager<myfoodapp.Hub.Models.ApplicationUser>(new Microsoft.AspNet.Identity.EntityFramework.UserStore<myfoodapp.Hub.Models.ApplicationUser>(new myfoodapp.Hub.Models.ApplicationDbContext()));
+					var user = manager.FindByName(User.Identity.GetUserName());
+					if (user != null && manager.IsInRole(user.Id, "Admin"))
+					{
+						<li>
+							<a class="menu-item" href="@(Url.Action("Index", "Messages"))">
+								<div class="menu-img">
+									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21 21">
+										<g id="_15_Comment_6" data-name="15 Comment_6" transform="translate(-0.84 -0.33)">
+											<path id="Fill_182" data-name="Fill 182" class="cls-1" d="M10.5,21a10.481,10.481,0,0,1-5.56-1.605l-3.545,1.52A1.012,1.012,0,0,1,1,21a1,1,0,0,1-.831-.455.979.979,0,0,1-.08-.939l1.52-3.545A10.494,10.494,0,1,1,10.5,21ZM14.75,9.25A1.25,1.25,0,1,0,16,10.5,1.251,1.251,0,0,0,14.75,9.25Zm-4.25,0a1.25,1.25,0,1,0,1.25,1.25A1.251,1.251,0,0,0,10.5,9.25Zm-4.25,0A1.25,1.25,0,1,0,7.5,10.5,1.251,1.251,0,0,0,6.25,9.25Z" transform="translate(0.84 0.33)" />
+										</g>
+									</svg>
+
+								</div>
+								<div class="menu-text">
+									[[[Messages]]]
+								</div>
+							</a>
+						</li>
+						<li>
+							<a class="menu-item" href="@(Url.Action("Index", "Measures"))">
+								<div class="menu-img">
+									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21 21">
+										<g id="_3_Diagram_3" data-name="3 Diagram_3" transform="translate(-0.841 -0.33)">
+											<path id="Fill_159" data-name="Fill 159" class="cls-1" d="M1.5,13.5h2A1.5,1.5,0,0,0,5,12V1.5A1.5,1.5,0,0,0,3.5,0h-2A1.5,1.5,0,0,0,0,1.5V12a1.5,1.5,0,0,0,1.5,1.5" transform="translate(16.841 7.83)" />
+											<path id="Fill_160" data-name="Fill 160" class="cls-1" d="M1.5,21h2A1.5,1.5,0,0,0,5,19.5V1.5A1.5,1.5,0,0,0,3.5,0h-2A1.5,1.5,0,0,0,0,1.5v18A1.5,1.5,0,0,0,1.5,21" transform="translate(8.841 0.33)" />
+											<path id="Fill_161" data-name="Fill 161" class="cls-1" d="M1.5,8.5h2A1.5,1.5,0,0,0,5,7V1.5A1.5,1.5,0,0,0,3.5,0h-2A1.5,1.5,0,0,0,0,1.5V7A1.5,1.5,0,0,0,1.5,8.5" transform="translate(0.841 12.83)" />
+										</g>
+									</svg>
+
+								</div>
+								<div class="menu-text">
+									[[[Measures]]]
+								</div>
+							</a>
+						</li>
+					}
+					<li>
+						<a class="menu-item" href="@(Url.Action("Index", "ProductionUnits"))">
+							<div class="menu-img">
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21 21">
+									<g id="_13_Box" data-name="13 Box" transform="translate(-0.84 -0.33)">
+										<path id="Fill_129" data-name="Fill 129" class="cls-1" d="M10.5,21a2.486,2.486,0,0,1-.985-.2l-8-3.43A2.5,2.5,0,0,1,0,15.07V5.93A2.46,2.46,0,0,1,.54,4.39a2.472,2.472,0,0,1,.975-.76l8-3.43a2.528,2.528,0,0,1,1.97,0l8,3.43a2.441,2.441,0,0,1,.985.77A2.47,2.47,0,0,1,21,5.93v9.14a2.5,2.5,0,0,1-1.515,2.3l-8,3.43A2.486,2.486,0,0,1,10.5,21Zm0-18.5-8,3.43v9.14l8,3.43V9.44a1.007,1.007,0,0,1,.605-.92L17.83,5.64,10.5,2.5Z" transform="translate(0.84 0.33)" />
+									</g>
+								</svg>
+							</div>
+							<div class="menu-text">
+								[[[Production Units]]]
+							</div>
+						</a>
+					</li>
+
+					if (user != null && manager.IsInRole(user.Id, "Admin"))
+					{
+						<li>
+							<a class="menu-item" href="@(Url.Action("Index", "PerformanceHealth"))">
+								<div class="menu-img">
+									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21 18">
+										<g id="_8_Like" data-name="8 Like" transform="translate(-0.83 -0.619)">
+											<path id="Fill_313" data-name="Fill 313" class="cls-1" d="M11.184,1.734l-.684.7-.684-.7a5.633,5.633,0,0,0-8.132,0,6.054,6.054,0,0,0-.215,8.144,62.131,62.131,0,0,0,8.263,7.853,1.231,1.231,0,0,0,1.535,0A62.1,62.1,0,0,0,19.53,9.879a6.054,6.054,0,0,0-.215-8.144,5.633,5.633,0,0,0-8.132,0" transform="translate(0.83 0.62)" />
+										</g>
+									</svg>
+								</div>
+								<div class="menu-text">
+									[[[Performance &amp; Health]]]
+								</div>
+							</a>
+						</li>
+					}
+					<li>
+						<a class="menu-item" href="@(Url.Action("Index", "Recipes"))">
+							<div class="menu-img">
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21 21">
+									<g id="_11_Notebook" data-name="11 Notebook" transform="translate(-0.84 -0.331)">
+										<path id="Fill_224" data-name="Fill 224" class="cls-1" d="M18.5,21H5a2.5,2.5,0,0,1-2.5-2.5v-1h-1a1.5,1.5,0,0,1,0-3h1V12h-1a1.5,1.5,0,0,1,0-3h1V6.5h-1a1.5,1.5,0,1,1,0-3h1v-1A2.5,2.5,0,0,1,5,0H18.5A2.5,2.5,0,0,1,21,2.5v16A2.5,2.5,0,0,1,18.5,21Zm-10-9.25a1,1,0,0,0,0,2h4a1,1,0,0,0,0-2Zm0-4.5a1,1,0,0,0,0,2H15a1,1,0,1,0,0-2Z" transform="translate(0.84 0.331)" />
+									</g>
+								</svg>
+							</div>
+							<div class="menu-text">
+								[[[Calendar]]]
+							</div>
+						</a>
+					</li>
+					<li>
+						<a class="menu-item" href="@(Url.Action("Update", "MyInfo"))">
+							<div class="menu-img">
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21 21">
+									<g id="_26_Info" data-name="26 Info" transform="translate(-0.84 -0.33)">
+										<path id="Fill_14" data-name="Fill 14" class="cls-1" d="M10.5,21A10.5,10.5,0,0,1,6.414.825a10.5,10.5,0,0,1,8.172,19.349A10.429,10.429,0,0,1,10.5,21Zm0-12.687a.876.876,0,0,0-.875.875v5.688a.875.875,0,0,0,1.75,0V9.187A.876.876,0,0,0,10.5,8.313Zm0-3.063a.875.875,0,1,0,.875.875A.876.876,0,0,0,10.5,5.25Z" transform="translate(0.84 0.33)" />
+									</g>
+								</svg>
+
+							</div>
+							<div class="menu-text">[[[My Information]]]</div>
+						</a>
+					</li>
+                    <li>
+                        <a class="menu-item" href="https://wiki.myfood.eu/docs/" target="_blank">
+                            <div class="menu-img">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21 21">
+                                    <path class="cls-1" d="M19 3h-4.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm1 14H8c-.55 0-1-.45-1-1s.45-1 1-1h5c.55 0 1 .45 1 1s-.45 1-1 1zm3-4H8c-.55 0-1-.45-1-1s.45-1 1-1h8c.55 0 1 .45 1 1s-.45 1-1 1zm0-4H8c-.55 0-1-.45-1-1s.45-1 1-1h8c.55 0 1 .45 1 1s-.45 1-1 1z" />
+                                </svg>
+                            </div>
+                            <div class="menu-text">[[[Wiki]]]</div>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="menu-item" href="[[[SHOP URL]]]" target="_blank">
+                            <div class="menu-img">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21 21">
+                                    <path class="cls-1" d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 3c0 .55.45 1 1 1h1l3.6 7.59-1.35 2.44C4.52 15.37 5.48 17 7 17h11c.55 0 1-.45 1-1s-.45-1-1-1H7l1.1-2h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.37-.66-.11-1.48-.87-1.48H5.21l-.67-1.43c-.16-.35-.52-.57-.9-.57H2c-.55 0-1 .45-1 1zm16 15c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" />
+                                </svg>
+                            </div>
+                            <div class="menu-text">[[[Shop]]]</div>
+                        </a>
+                    </li>
+                }
+
+				@if (Request.IsAuthenticated)
+				{
+					var manager = new UserManager<myfoodapp.Hub.Models.ApplicationUser>(new Microsoft.AspNet.Identity.EntityFramework.UserStore<myfoodapp.Hub.Models.ApplicationUser>(new myfoodapp.Hub.Models.ApplicationDbContext()));
+					var user = manager.FindByName(User.Identity.GetUserName());
+					if (user != null && manager.IsInRole(user.Id, "Admin"))
+					{
+						<li id="About">
+							<a class="menu-item" href="@(Url.Action("Index", "About"))">
+								<div class="menu-img">
+									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21 21">
+										<g id="_27_Question" data-name="27 Question" transform="translate(-0.84 -0.33)">
+											<path id="Fill_13" data-name="Fill 13" class="cls-1" d="M10.5,21A10.5,10.5,0,0,1,6.414.825a10.5,10.5,0,0,1,8.172,19.349A10.429,10.429,0,0,1,10.5,21Zm0-6.125a.875.875,0,1,0,.875.875A.876.876,0,0,0,10.5,14.875Zm-.022-8.751h.048a2,2,0,0,1,1.943,1.938,1.959,1.959,0,0,1-1.238,1.859,2.484,2.484,0,0,0-1.606,2.292v.473a.875.875,0,0,0,1.75,0v-.473a.743.743,0,0,1,.5-.665,3.72,3.72,0,0,0-1.326-7.175H10.5A3.719,3.719,0,0,0,6.781,8.094a.875.875,0,0,0,1.75,0,1.954,1.954,0,0,1,.586-1.4A1.913,1.913,0,0,1,10.478,6.124Z" transform="translate(0.84 0.33)" />
+										</g>
+									</svg>
+
+
+								</div>
+								<div class="menu-text">
+									[[[About]]]
+								</div>
+							</a>
+						</li>
+					}
+				}
+
+				@if (Request.IsAuthenticated)
+				{
+					using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "nav" }))
+					{
+						@Html.AntiForgeryToken()
+						<li>
+							<a class="menu-item" href="javascript:document.getElementById('logoutForm').submit()">
+								<div class="menu-img">
+									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 21">
+										<g id="_1_Entry" data-name="1 Entry" transform="translate(15.841 21.33) rotate(180)">
+											<path id="Fill_48" data-name="Fill 48" class="cls-1" d="M10.833,0H2.5A2.566,2.566,0,0,0,0,2.625V3.719A1.069,1.069,0,0,0,1.042,4.813,1.069,1.069,0,0,0,2.083,3.719V2.625A.429.429,0,0,1,2.5,2.188h8.333a.429.429,0,0,1,.417.438v15.75a.429.429,0,0,1-.417.438H2.5a.429.429,0,0,1-.417-.437V17.281a1.069,1.069,0,0,0-1.042-1.094A1.069,1.069,0,0,0,0,17.281v1.094A2.566,2.566,0,0,0,2.5,21h8.333a2.566,2.566,0,0,0,2.5-2.625V2.625A2.566,2.566,0,0,0,10.833,0" transform="translate(2.508 0.33)" />
+											<path id="Fill_49" data-name="Fill 49" class="cls-1" d="M9.512,4.769,6.4,8.046a.83.83,0,0,1-1.425-.617V5.9H.833A.853.853,0,0,1,0,5.027V3.277A.856.856,0,0,1,.833,2.4H4.971V.875A.83.83,0,0,1,6.4.258L9.512,3.535a.9.9,0,0,1,0,1.234" transform="translate(0.841 6.678)" />
+										</g>
+									</svg>
+								</div>
+								<div class="menu-text">
+									[[[Log off]]]
+								</div>
+
+							</a>
+						</li>
+					}
+				}
+				else
+				{
+					<li>
+						<a class="menu-item" href="@Url.Action("Login", "Account")">
+							<div class="menu-img"></div>
+							<div class="menu-text">
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 21">
+									<g id="_1_Entry" data-name="1 Entry" transform="translate(-0.841 -0.33)">
+										<path id="Fill_48" data-name="Fill 48" class="cls-1" d="M10.833,0H2.5A2.566,2.566,0,0,0,0,2.625V3.719A1.069,1.069,0,0,0,1.042,4.813,1.069,1.069,0,0,0,2.083,3.719V2.625A.429.429,0,0,1,2.5,2.188h8.333a.429.429,0,0,1,.417.438v15.75a.429.429,0,0,1-.417.438H2.5a.429.429,0,0,1-.417-.437V17.281a1.069,1.069,0,0,0-1.042-1.094A1.069,1.069,0,0,0,0,17.281v1.094A2.566,2.566,0,0,0,2.5,21h8.333a2.566,2.566,0,0,0,2.5-2.625V2.625A2.566,2.566,0,0,0,10.833,0" transform="translate(2.508 0.33)" />
+										<path id="Fill_49" data-name="Fill 49" class="cls-1" d="M9.512,4.769,6.4,8.046a.83.83,0,0,1-1.425-.617V5.9H.833A.853.853,0,0,1,0,5.027V3.277A.856.856,0,0,1,.833,2.4H4.971V.875A.83.83,0,0,1,6.4.258L9.512,3.535a.9.9,0,0,1,0,1.234" transform="translate(0.841 6.678)" />
+									</g>
+								</svg>
+								[[[Login]]]
+							</div>
+						</a>
+					</li>
+				}
+			</ul>
+		</div>
+	</div><!--close left column-->
+<div id="main-section" class="col-md-12 column">
+
+    <div class="loaderArea">
+        <div class="sequence">
+            <div class="seq-preloader">
+                <img src="https://myfood.eu/wp-content/themes/myfood/assets/img/misc/loader.gif" alt="Alternate Text"  class="seq-preload-indicator"/>
+            </div>
+        </div>
+    </div>
+    <!--open main column-->
+    @RenderBody()
+</div><!--close main column-->
+	@*</div><!--close row-->
+		</div><!--close container-->*@
+	<script>
+        $(document).ready(function () {
+            $('[data-toggle=offcanvas]').click(function () {
+                $('.row-offcanvas').toggleClass('active');
+            });
+        });
+    </script>
+<style type="text/css">
+
+
+    a:link {
+        color: #ffffff;
+    }
+    /* normal link */
+    a:visited {
+        color: #ffffff;
+    }
+    /* visited link */
+    a:hover {
+        color: #ffffff;
+    }
+    /* mouse over link */
+    a:active {
+        color: #ffffff;
+    }
+/* selected link */
+	</style>
+
+<script>
+    $("#main-section").ready(function () {
+            $preloader = $('.loaderArea'),
+            //$loader = $preloader.find('.loader');
+            $preloader.animate({ left: '100%', width: 0 }, 1000);
+            $("img.seq-preload-indicator").animate({ opacity: 0 }, 500);
+            //$loader.fadeOut();
+            //$preloader.delay(800).fadeOut('slow');
+        }
+    );
+</script>
+</body>
+</html>

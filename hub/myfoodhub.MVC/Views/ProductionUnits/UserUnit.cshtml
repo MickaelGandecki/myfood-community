@@ -1,0 +1,1505 @@
+﻿@model IEnumerable<myfoodapp.Hub.Models.ProductionUnit>
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    float[] waterTempRedLevel = new float[] { 0, 32 };
+    float[] waterTempYellowLevel = new float[] { 5, 28 };
+    float[] waterTempGreenLevel = new float[] { 12, 24 };
+    float[] airTempRedLevel = new float[] { 0, 40 };
+    float[] airTempYellowLevel = new float[] { 5, 32 };
+    float[] airTempGreenLevel = new float[] { 12, 28 };
+    string[] months = new string[] {
+            "[[[Jan]]]",
+            "[[[Feb]]]",
+            "[[[Mar]]]",
+            "[[[Apr]]]",
+            "[[[May]]]",
+            "[[[June]]]",
+            "[[[July]]]",
+            "[[[Aug]]]",
+            "[[[Sept]]]",
+            "[[[Oct]]]",
+            "[[[Nov]]]",
+            "[[[Dec]]]",
+        };
+}
+@if (ViewBag.HasFahrenheitSetting == true)
+{
+    waterTempRedLevel = new float[] { (float)waterTempRedLevel[0] * 9 / 5 + 32, (float)waterTempRedLevel[1] * 9 / 5 + 32 };
+    waterTempYellowLevel = new float[] { (float)waterTempYellowLevel[0] * 9 / 5 + 32, (float)waterTempYellowLevel[1] * 9 / 5 + 32 };
+    waterTempGreenLevel = new float[] { (float)waterTempGreenLevel[0] * 9 / 5 + 32, (float)waterTempGreenLevel[1] * 9 / 5 + 32 };
+    airTempRedLevel = new float[] { (float)airTempRedLevel[0] * 9 / 5 + 32, (float)airTempRedLevel[1] * 9 / 5 + 32 };
+    airTempYellowLevel = new float[] { (float)airTempYellowLevel[0] * 9 / 5 + 32, (float)airTempYellowLevel[1] * 9 / 5 + 32 };
+    airTempGreenLevel = new float[] { (float)airTempGreenLevel[0] * 9 / 5 + 32, (float)airTempGreenLevel[1] * 9 / 5 + 32 };
+}
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/series-label.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+
+<link href="~/Content/Datepicker/datepicker.min.css" rel="stylesheet" type="text/css">
+<script src="~/Content/Datepicker/datepicker.min.js"></script>
+<script src="~/Content/Datepicker/datepicker.en.js"></script>
+
+<script type="text/javascript">
+    window.rangeEnabled = false;
+	Highcharts.setOptions({
+		lang: {
+            shortMonths: [
+                "@months[0]",
+                "@months[1]",
+                "@months[2]",
+                "@months[3]",
+                "@months[4]",
+                "@months[5]",
+                "@months[6]",
+                "@months[7]",
+                "@months[8]",
+                "@months[9]",
+                "@months[10]",
+                "@months[11]",
+            ],
+		}
+	});
+        var dialog = $("#dialog");
+
+        (function (H) {
+            H.seriesTypes.line.prototype.requireSorting = false;
+        })(Highcharts);
+
+
+        $(document).ready(function () {
+            var leg_1_datepicker = $('#datepicker-here').datepicker({
+                startDate: new Date(ToJavaScriptDate(new Date())),
+                minDate: new Date(),
+                startDate: new Date()
+            }).data('datepicker').selectDate(new Date(ToJavaScriptDate(new Date())));
+
+            viewInfo();
+        });
+
+        function ToJavaScriptDate(value) {
+            var options = { year: 'numeric', month: 'short', day: 'numeric' };
+
+            return value.toLocaleDateString("en-US", options);
+        }
+
+        function PHMeasureChart(productId, ProductRange) {
+            $.ajax({
+                url: "@Url.Action("PHMeasure_Read", "ProductionUnits")",
+                dataType: "json",
+                data: { id: productId, range: ProductRange },
+                type: "POST",
+                success: function (response) {
+                    response.forEach(function (item, i, response) {
+                        var date = new Date(response[i][0].toString());
+                        response[i][0] = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
+                    });
+
+                    window.PHTempChartData = {
+                        chart: {
+                            type: 'spline',
+                            backgroundColor: 'transparent',
+                        },
+                        //legend: {
+                        //    enabled: false
+                        //},
+                        title: {
+                            text: ''
+                        },
+                        subtitle: {
+                            text: ''
+                        },
+                        xAxis: {
+                            type: 'datetime',
+                            dateTimeLabelFormats: {
+                                month: '%e. %b'
+                            },
+                            title: {
+                                text: ''
+                            },
+                            minorGridLineWidth: 1,
+                            gridLineWidth: 0,
+                            alternateGridColor: null,
+                        },
+                        yAxis: {
+                            min: 4,
+                            max: 10,
+                            title: {
+                                text: ''
+                            },
+                            minorGridLineWidth: 1,
+                            gridLineWidth: 1,
+                            alternateGridColor: null,
+                        },
+                        tooltip: {
+                            headerFormat: '<b>{series.name}</b><br>',
+                            pointFormat: '{point.x:%e %b %H:%M} value:<b>{point.y:.2f}</b>'
+                        },
+                        plotOptions: {
+                            spline: {
+                                marker: {
+                                    enabled: false
+                                },
+                                lineWidth: 4,
+                                color: '#2EA636',
+                            }
+                        },
+                        series: [{
+                            name: 'pH',
+                            data: response,
+                            label: {
+                                enabled: false,
+                            }
+                        }],
+                        navigation: {
+                            menuItemStyle: {
+                                fontSize: '10px'
+                            }
+                        }
+                    };
+                    Highcharts.chart('ph-chart', window.PHTempChartData);
+                    $('.highcharts-contextbutton').remove();
+                    $('.highcharts-credits').remove();
+                    $('.highcharts-label').remove();
+                }
+            });
+        }
+
+        function WaterTempMeasureChart(productId, ProductRange) {
+            $.ajax({
+                url: "@Url.Action("WaterTempMeasure_Read", "ProductionUnits")",
+                dataType: "json",
+                data: { id: productId, range: ProductRange },
+                type: "POST",
+                success: function (response) {
+                    response.forEach(function (item, i, response) {
+                        var date = new Date(response[i][0].toString());
+                        response[i][0] = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
+                    });
+
+                    window.waterTempChartData = {
+                        chart: {
+                            type: 'spline',
+                            backgroundColor: 'transparent',
+                        },
+                        //legend: {
+                        //    enabled: false
+                        //},
+                        title: {
+                            text: ''
+                        },
+                        subtitle: {
+                            text: ''
+                        },
+                        xAxis: {
+                            type: 'datetime',
+                            dateTimeLabelFormats: {
+                                month: '%e. %b'
+                            },
+                            title: {
+                                text: ''
+                            },
+                            minorGridLineWidth: 1,
+                            gridLineWidth: 0,
+                            alternateGridColor: null,
+                        },
+                        yAxis: {
+                            title: {
+                                text: ''
+                            },
+                            minorGridLineWidth: 1,
+                            gridLineWidth: 1,
+                            alternateGridColor: null,
+                        },
+                        tooltip: {
+                            headerFormat: '<b>{series.name}</b><br>',
+                            pointFormat: '{point.x:%e %b %H:%M} value:<b>{point.y:.2f}</b>'
+                        },
+                        plotOptions: {
+                            spline: {
+                                marker: {
+                                    enabled: false
+                                },
+                                lineWidth: 4,
+                                color: '#2EA636',
+                            },
+                        },
+                        series: [{
+                            name: '[[[Water Temp]]]',
+                            data: response,
+                            label: {
+                                enabled: false,
+                            },
+                        }],
+                        navigation: {
+                            menuItemStyle: {
+                                fontSize: '10px'
+                            }
+                        }
+                    };
+                    Highcharts.chart('watertemp-chart', window.waterTempChartData);
+                    $('.highcharts-contextbutton').remove();
+                    $('.highcharts-credits').remove();
+                }
+            });
+        }
+        function AirTempMeasureChart(productId, ProductRange) {
+            $.ajax({
+                url: "@Url.Action("TempMeasure_Read", "ProductionUnits")",
+                dataType: "json",
+                data: { id: productId, range: ProductRange },
+                type: "POST",
+                success: function (response) {
+                    response.air.forEach(function (item, i, response) {
+                        var date = new Date(response[i][0].toString());
+                        response[i][0] = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
+                    });
+                    response.externalAir.forEach(function (item, i, response) {
+                        var date = new Date(response[i][0].toString());
+                        response[i][0] = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
+                    });
+                    window.airTempChartData = {
+                        chart: {
+                            type: 'spline',
+                            backgroundColor: 'transparent',
+                        },
+                        title: {
+                            text: ''
+                        },
+                        subtitle: {
+                            text: ''
+                        },
+                        xAxis: {
+                            type: 'datetime',
+                            dateTimeLabelFormats: {
+                                month: '%e. %b'
+                            },
+                            title: {
+                                text: ''
+                            },
+                            minorGridLineWidth: 1,
+                            gridLineWidth: 0,
+                            alternateGridColor: null,
+                        },
+                        yAxis: {
+                            title: {
+                                text: ''
+                            },
+                            minorGridLineWidth: 1,
+                            gridLineWidth: 1,
+                            alternateGridColor: null,
+                        },
+                        tooltip: {
+                            headerFormat: '<b>{series.name}</b><br>',
+                            pointFormat: '{point.x:%e %b %H:%M} value:<b>{point.y:.2f}</b>'
+                        },
+                        plotOptions: {
+                            spline: {
+                                marker: {
+                                    enabled: false
+                                },
+                                lineWidth: 4,
+                            }
+                        },
+                        series: [
+                            {
+                                name: '[[[Air Temp]]]',
+                                data: response.air,
+                                color: '#2EA636',
+                                label: {
+                                    enabled: false,
+                                },
+                            },
+
+                            {
+                                name: '[[[External Air Temp]]]',
+                                data: response.externalAir,
+                                color: '#E54848',
+                                label: {
+                                    enabled: false,
+                                }
+                            }
+                        ],
+                        navigation: {
+                            menuItemStyle: {
+                                fontSize: '10px'
+                            }
+                        }
+                    };
+                    Highcharts.chart('airtemp-chart', window.airTempChartData);
+                    $('.highcharts-contextbutton').remove();
+                    $('.highcharts-credits').remove();
+                },
+                error: function (response) {
+                    console.log('hmm');
+                }
+            });
+        }
+        function HumidityMeasureChart(productId, ProductRange) {
+            $.ajax({
+                url: "@Url.Action("HumidityMeasure_Read", "ProductionUnits")",
+                dataType: "json",
+                data: { id: productId, range: ProductRange },
+                type: "POST",
+                success: function (response) {
+                    response.humidity.forEach(function (item, i, response) {
+                        var date = new Date(response[i][0].toString());
+                        response[i][0] = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
+                    });
+                    response.externalHumidity.forEach(function (item, i, response) {
+                        var date = new Date(response[i][0].toString());
+                        response[i][0] = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
+                    });
+
+                    Highcharts.chart('humidity-chart', {
+                        chart: {
+                            type: 'spline',
+                            backgroundColor: 'transparent',
+                        },
+                        title: {
+                            text: ''
+                        },
+                        subtitle: {
+                            text: ''
+                        },
+                        xAxis: {
+                            type: 'datetime',
+                            dateTimeLabelFormats: {
+                                month: '%e. %b'
+                            },
+                            title: {
+                                text: ''
+                            },
+                            minorGridLineWidth: 1,
+                            gridLineWidth: 0,
+                            alternateGridColor: null,
+                        },
+                        yAxis: {
+                            title: {
+                                text: ''
+                            },
+                            minorGridLineWidth: 1,
+                            gridLineWidth: 1,
+                            alternateGridColor: null,
+
+                        },
+                        tooltip: {
+                            headerFormat: '<b>{series.name}</b><br>',
+                            pointFormat: '{point.x:%e %b %H:%M} value:<b>{point.y:.2f}</b>'
+                        },
+                        plotOptions: {
+                            spline: {
+                                marker: {
+                                    enabled: false
+                                },
+                                lineWidth: 4,
+                            }
+                        },
+                        series: [{
+                                name: '[[[Humidity]]]',
+                                data: response.humidity,
+                                color: '#2EA636',
+                                label: {
+                                    enabled: false,
+                                }
+                            },
+                            {
+                                name: '[[[External Humidity]]]',
+                                data: response.externalHumidity,
+                                color: '#E54848',
+                                label: {
+                                    enabled: false,
+                                }
+                            }],
+                        navigation: {
+                            menuItemStyle: {
+                                fontSize: '10px'
+                            }
+                        }
+                    });
+                    $('.highcharts-contextbutton').remove();
+                    $('.highcharts-credits').remove();
+                }
+            });
+    }
+
+     
+    function toggleRanges() {
+		
+        window.rangeEnabled = !window.rangeEnabled;
+
+        if (window.rangeEnabled) {
+            window.waterTempChartData.yAxis.plotBands = [
+                {
+                    from: @waterTempRedLevel[0],
+                    to: @waterTempRedLevel[1],
+                    color: '#F7CAAC',
+                },
+                {
+                    from: @waterTempYellowLevel[0],
+                    to: @waterTempYellowLevel[1],
+                    color: '#FFF2CC',
+                },
+                {
+                    from: @waterTempGreenLevel[0],
+                    to: @waterTempGreenLevel[1],
+                    color: '#E1EFD8',
+                },
+            ];
+
+            window.airTempChartData.yAxis.plotBands = [
+                {
+                    from: @airTempRedLevel[0],
+                    to: @airTempRedLevel[1],
+                    color: '#F7CAAC',
+                },
+                {
+                    from: @airTempYellowLevel[0],
+                    to: @airTempYellowLevel[1],
+                    color: '#FFF2CC',
+                },
+                {
+                    from: @airTempGreenLevel[0],
+                    to: @airTempGreenLevel[1],
+                    color: '#E1EFD8',
+                },
+            ];
+
+            window.PHTempChartData.yAxis.plotBands = [
+                {
+                    from: 5.5,
+                    to: 8.8,
+                    color: '#F7CAAC',
+                },
+                {
+                    from: 6,
+                    to: 7.9,
+                    color: '#FFF2CC',
+                },
+                {
+                    from: 6.4,
+                    to: 7.2,
+                    color: '#E1EFD8',
+                },
+            ];
+        }
+        else {
+            window.waterTempChartData.yAxis.plotBands = [];
+            window.airTempChartData.yAxis.plotBands = [];
+            window.PHTempChartData.yAxis.plotBands = [];
+        }
+		Highcharts.chart('ph-chart', window.PHTempChartData);
+        Highcharts.chart('watertemp-chart', window.waterTempChartData);
+        Highcharts.chart('airtemp-chart', window.airTempChartData);
+        $('.highcharts-contextbutton').remove();
+        $('.highcharts-credits').remove();
+        $('.highcharts-label').remove();
+    }
+
+
+        function viewInfo() {
+
+            var productionUnitId = $('#routeDataId').val();
+            $.ajax({
+                url: "@Url.Action("GetProductionUnitDetailPopUp", "ProductionUnits")",
+                dataType: "json",
+                data: { id: productionUnitId },
+                type: "POST",
+                success: function (item) {
+
+                    $(".image-container .img-responsive").attr("src", "/Content/Pictures/Sites/" + item.PicturePath);
+                    $(".company-logo .img-responsive").attr("src", "/Content/Pictures/ProductType/" + item.ProductionUnitTypeImage);
+                    $(".company-name").text(item.ProductionUnitTypeName);
+                    $(".contacts .title").text(item.PioneerCitizenName + ' #' + item.PioneerCitizenNumber);
+                    $(".Average-Monthly-Production").text(item.AverageMonthlyProduction);
+                    $(".Average-Monthly-Spared-CO2").text(item.AverageMonthlySparedCO2);
+                    $(".Online-Since-Weeks").text(item.OnlineSinceWeeks);
+                    $(".phone").text(item.PhoneNumber);
+                    $(".mail").text(item.ContactMail);
+                    $(".mail").attr("href", "mailto:" + item.ContactMail);
+
+                    if (item.Location != "") {
+                        $(".location").text(item.Location);
+                        $("li.loc").show();
+                    }
+                    else
+                        $("li.loc").remove()
+
+                    if (item.PreferedMoment != "") {
+                        $(".best-to-contact").text(item.PreferedMoment);
+                        $("li.btc").show();
+                    }
+                    else
+                        $("li.btc").remove()
+                }
+            });
+        }
+
+        function GetEventTypes() {
+            $("#event-type-tiles").empty();
+            $.ajax({
+                url: "@Url.Action("EventType_Read", "ProductionUnits")",
+                dataType: "json",
+                type: "POST",
+                success: function (result) {
+                    var count = result.Data.length;
+                    var div;
+                    $.each(result.Data, function (key, value) {
+
+                        if (key % 6 == 0) {
+                            div = document.createElement('div');
+                            $(div).addClass("radio-tile-row");
+
+                            if (key + 6 > count)
+                                $(div).addClass("incomplete-row");
+
+                            $("#event-type-tiles").append(div);
+                        }
+
+                        var checked = !key ? "checked" : "";
+                        var eventItem = `
+							<div class="input-container">
+								<input class="radio-button" value="${value.Id}" type="radio" name="event-type" ${checked}/>
+								<div class="radio-tile">
+								  <div class="icon action-icon">
+									${value.svgPath}
+								  </div>
+								  <label for="action" class="radio-tile-label">${value.name}</label>
+								</div>
+							  </div>`;
+
+                        $(div).append(eventItem);
+                    });
+
+                    $("[name='event-type']").on("click", function () {
+                        var id = $(this).val();
+                        GetEventTypeItems(id);
+                    });
+                }
+            });
+        }
+
+        function AddEvent() {
+            var obj = {};
+            obj.ProductionUnitId = $('#routeDataId').val();
+            obj.EventTypeId = $("[name='event-type']:checked").val();
+            obj.EventTypeItemId = $("[name='event-item']:checked").val();
+            obj.Note = $("[name='event-note']").val();
+            obj.CurrentDate = new Date($('#datepicker-here').data('datepicker').selectedDates[0]).toJSON();
+            obj.Details = $("[name='event-description']").val();
+
+            if (obj.EventTypeItemId === undefined)
+                $("#event-item-caption").css("color", "#e54848");
+            else
+                $("#event-item-caption").css("color", "#6C7A73");
+            if (obj.CurrentDate == null)
+                $("#datepicker-here").css("border", "2px solid #e54848");
+            else
+                $("#datepicker-here").css("border", "2px solid #F3F6F8");
+
+            if (obj.EventTypeItemId === undefined || obj.CurrentDate == null) {
+                return;
+            }
+
+            $.ajax({
+                url: "@Url.Action("AddEvent", "ProductionUnits")",
+                dataType: "json",
+                data: obj,
+                type: "POST",
+                success: function (result) {
+                    if (result) {
+                        $("#add-event").modal("hide");
+                    }
+                }
+            });
+        }
+
+
+        function AddEventPopupInit() {
+            GetEventTypes();
+            GetEventTypeItems(4);
+        }
+        function GetEventTypeItems(id) {
+            $("#event-item-tiles").empty();
+
+            $.ajax({
+                url: "@Url.Action("EventTypeItem_Read", "ProductionUnits")",
+                dataType: "json",
+                data: { "evenTypeId": id },
+                type: "POST",
+                success: function (result) {
+                    var count = result.Data.length;
+                    var div;
+                    $.each(result.Data, function (key, value) {
+
+                        if (key % 3 == 0) {
+                            div = document.createElement('div');
+                            $(div).addClass("row radio-tile-row more-row");
+
+                            $("#event-item-tiles").append(div);
+                        }
+
+                        var eventItem = `
+								  <div class="more-item">
+									<input id="eventItem-${value.Id}" name="event-item" value="${value.Id}" class="custom-radio" type="radio">
+									<label for="eventItem-${value.Id}">${value.name}</label>
+								  </div>`;
+
+                        $(div).append(eventItem);
+                    });
+                }
+            });
+        }
+
+        window.onload = function onLoad(e) {
+
+            var productionUnitId = $('#routeDataId').val();
+
+            PHMeasureChart(productionUnitId, null);
+            WaterTempMeasureChart(productionUnitId, null);
+
+            AirTempMeasureChart(productionUnitId, null);
+
+            HumidityMeasureChart(productionUnitId, null);
+
+            $.ajax({
+                url: "@Url.Action("GetProductionUnitDetail", "ProductionUnits")",
+                dataType: "json",
+                data: { id: productionUnitId },
+                type: "POST",
+                success: function (response) {
+                    $("#PioneerCitizenName").text(response.PioneerCitizenName + " #" + response.PioneerCitizenNumber);
+                    $("#ProductionUnitType").text(response.ProductionUnitType);
+                    $("#ProductionUnitVersion").text('VERSION: ' + response.ProductionUnitVersion);
+                    $("#ProductionUnitOptions").text('Options: ' + response.ProductionUnitOptions);
+                    $("#OnlineSinceWeeks").text(response.OnlineSinceWeeks);
+                    $("#AverageMonthlyProduction").text(response.AverageMonthlyProduction + 'kg');
+                    $("#AverageMonthlySparedCO2").text(response.AverageMonthlySparedCO2 + 'kg');
+
+                    if (response.PicturePath === null) {
+                        $("#ProductionUnitPicture").hide();
+                    }
+                    else {
+                        $('#ProductionUnitPicture').css("background-image", "linear-gradient(rgba(0, 0, 0, .1), rgba(0, 0, 0, .5)), url(/Content/Pictures/Sites/" + response.PicturePath + ")");
+                        $("#ProductionUnitPicture").show();
+                    }
+
+                    $("#CurrentPhValue").text(response.CurrentPhValue);
+                    $("#CurrentPhCaptureTime").text(response.CurrentPhCaptureTime);
+                    $("#AverageHourPhValue").text(response.AverageHourPhValue);
+                    $("#AverageDayPhValue").text(response.AverageDayPhValue);
+                    $("#LastDayPhCaptureTime").text(response.LastDayPhCaptureTime);
+
+                    $("#CurrentWaterTempValue").text(response.CurrentWaterTempValue);
+                    $("#CurrentWaterTempCaptureTime").text(response.CurrentWaterTempCaptureTime);
+                    $("#AverageHourWaterTempValue").text(response.AverageHourWaterTempValue);
+                    $("#AverageDayWaterTempValue").text(response.AverageDayWaterTempValue);
+                    $("#LastDayWaterTempCaptureTime").text(response.LastDayWaterTempCaptureTime);
+
+                    $("#CurrentAirTempValue").text(response.CurrentAirTempValue);
+                    $("#CurrentAirTempCaptureTime").text(response.CurrentAirTempCaptureTime);
+                    $("#AverageHourAirTempValue").text(response.AverageHourAirTempValue);
+                    $("#AverageDayAirTempValue").text(response.AverageDayAirTempValue);
+                    $("#LastDayAirTempCaptureTime").text(response.LastDayAirTempCaptureTime);
+
+                    $("#CurrentHumidityValue").text(response.CurrentHumidityValue);
+                    $("#CurrentHumidityCaptureTime").text(response.CurrentHumidityCaptureTime);
+                    $("#AverageHourHumidityValue").text(response.AverageHourHumidityValue);
+                    $("#AverageDayHumidityValue").text(response.AverageDayHumidityValue);
+                    $("#LastDayHumidityCaptureTime").text(response.LastDayHumidityCaptureTime);
+                }
+            });
+
+            var myVal = $("#displayManagementBtn").val();
+            if (myVal === 'None') {
+                $("#managementButton").hide();
+            }
+        }
+
+
+        function onViewEventsClick() {
+            var productionUnitId = $('#routeDataId').val();
+            window.location = window.location.origin + "/Events/Index/" + productionUnitId;
+        }
+
+        function onManageUnitClick() {
+            var productionUnitId = $('#routeDataId').val();
+            window.location = window.location.origin + "/ProductionUnits/Update/" + productionUnitId;
+        }
+
+        function onThisWeekClick(sel) {
+
+            var productionUnitId = $('#routeDataId').val();
+
+            if (sel.options[sel.selectedIndex].text == "[[[This Last Day]]]") {
+                PHMeasureChart(productionUnitId, "thisLastDays");
+                WaterTempMeasureChart(productionUnitId, "thisLastDays");
+                AirTempMeasureChart(productionUnitId, "thisLastDays");
+                HumidityMeasureChart(productionUnitId, "thisLastDays");
+            }
+
+
+            if (sel.options[sel.selectedIndex].text == "[[[Last Week]]]") {
+                PHMeasureChart(productionUnitId, "thisWeek");
+                WaterTempMeasureChart(productionUnitId, "thisWeek");
+                AirTempMeasureChart(productionUnitId, "thisWeek");
+                HumidityMeasureChart(productionUnitId, "thisWeek");
+            }
+
+
+            if (sel.options[sel.selectedIndex].text == "[[[Last Three Months]]]") {
+                PHMeasureChart(productionUnitId, "lastThreeMonths");
+                WaterTempMeasureChart(productionUnitId, "lastThreeMonths");
+                AirTempMeasureChart(productionUnitId, "lastThreeMonths");
+                HumidityMeasureChart(productionUnitId, "lastThreeMonths");
+            }
+
+        }
+
+        function onExportCSVClick() {
+            var productionUnitId = $('#routeDataId').val();
+            window.location.href = "@Url.Action("DownloadCSV", "ProductionUnits")?id=" + productionUnitId;
+        }
+
+        function onEventTypeChange(arg) {
+            var currentEventypeIndex = $('#listViewEventType').data("kendoListView").select().index();
+            var currentEventypeId = $('#listViewEventType').data("kendoListView").dataSource.view()[currentEventypeIndex].Id;
+
+            var listViewEventTypeItems = $('#listViewEventTypeItems').data("kendoListView");
+            listViewEventTypeItems.dataSource.read({ evenTypeId: currentEventypeId });
+        }
+
+        function onEventTypeItemChange(arg) {
+            $('#descriptionTextBox').css("visibility", "visible");
+            $('#datePicker').css("visibility", "visible");
+        }
+
+        function onInitOpen(e) {
+
+        }
+
+        function onOpen(e) {
+
+        }
+
+        function onShow(e) {
+
+        }
+
+        function onHide(e) {
+
+        }
+
+        function onClose(e) {
+
+        }
+
+        function onCancel(e) {
+
+        }
+
+        function onOK(e) {
+
+            var currentProductionUnitId = $('#routeDataId').val();
+
+            var currentEventypeIndex = $('#listViewEventType').data("kendoListView").select().index();
+            if (currentEventypeIndex == -1)
+                return;
+
+            var currentEventypeId = $('#listViewEventType').data("kendoListView").dataSource.view()[currentEventypeIndex].Id;
+
+            var currentEventTypeItemIndex = $('#listViewEventTypeItems').data("kendoListView").select().index();
+            var currentEventTypeItemId = 0;
+
+            if (currentEventTypeItemIndex == -1) {
+                currentEventTypeItemId = 0;
+            }
+            else {
+                currentEventTypeItemId = $('#listViewEventTypeItems').data("kendoListView").dataSource.view()[currentEventTypeItemIndex].Id;
+            }
+
+            var strNote = $('#descriptionTextBox').val();
+
+            var date = $('#datePicker').data("kendoDatePicker").value().toISOString();
+
+            var strDetails = $('#detailsTextArea').val();
+
+            $.ajax({
+                url: "@Url.Action("AddEvent", "ProductionUnits")",
+                dataType: "json",
+                data: { productionUnitId: currentProductionUnitId, eventTypeId: currentEventypeId, eventTypeItemId: currentEventTypeItemId, note: strNote, currentDate: date, details: strDetails, },
+                type: "POST",
+                success: function (response) {
+                    $('#descriptionTextBox').val('');
+                    $('#detailsTextArea').val('');
+
+                    $('#listViewEventTypeItems').data("kendoListView").clearSelection();
+                }
+            });
+
+        }
+
+</script>
+
+<script type="text/x-kendo-tmpl" id="templateOption">
+    <div class="option">
+        <span>&bull; #:name#</span>
+    </div>
+</script>
+
+<input type="hidden" value="@ViewBag.CurrentUser" id="routeDataId" />
+<input type="hidden" id="displayManagementBtn" value="@ViewBag.DisplayManagementBtn" />
+
+<div id="main-section-header" class="row big-section">
+    <h2 id="title" class="col-lg-6">[[[Production Unit Details]]]</h2>
+    <div id="title-buttons" class="col-lg-6">
+        <img id="signal-img" width="40" title="@ViewBag.SignalStrenghtText" src="@ViewBag.SignalStrenghtImagePath" />
+
+        <select onchange="onThisWeekClick(this)" class="change-graph">
+            <option>[[[This Last Day]]]</option>
+            <option>[[[Last Week]]]</option>
+            <option>[[[Last Three Months]]]</option>
+        </select>
+        <button class="fill" data-toggle="modal" data-target="#performanceModal">[[[View Info]]]</button>
+
+    </div>
+    <div style="clear:both;"></div>
+</div>
+
+<div id="statsContainerTop" class="row">
+    <div class="sticky-panel">
+        <div class="left-buttons-section">
+            <button class="btn btn-transparent" data-toggle="modal" data-target="#add-event" onclick="AddEventPopupInit()">[[[Add Event]]]</button>
+            <button class="btn btn-transparent" onclick="onViewEventsClick()">[[[View Events]]]</button>
+            <button class="btn btn-transparent" onclick="onManageUnitClick()">[[[Manage Unit]]]</button>
+            <button class="btn btn-transparent" onclick="toggleRanges()">[[[Enable / Disable Range]]]</button>
+            <button class="btn btn-green-sm" onclick="onExportCSVClick()">[[[Export CSV]]]</button>
+
+        </div>
+        <div class="right-buttons-section">
+            @using (Html.BeginForm("SelectProdUnit", "ProductionUnits", FormMethod.Post, new { @class = "unit-dropdown" }))
+            {
+                if (ViewBag.ProdUnitList != null)
+                {
+                    @Html.DropDownList("prodUnitId", (SelectList)ViewBag.ProdUnitList, new { @class = "change-graph", onchange = "this.form.submit();", id = "selectList" })
+                }
+            }
+            <button class="btn btn-green" onclick="onExportCSVClick()">[[[Export CSV]]]</button>
+        </div>
+    </div>
+
+    <div id="pHContainer" class="col-md-6">
+        <div class="wrapper">
+            <h3 class="graph-header">[[[pH]]]</h3>
+            <div class="sparkline-container">
+                <div>
+                    <div class="column-left">
+                        <h2>[[[CURRENT]]]</h2>
+                        <span id="CurrentPhValue">-</span>
+                        <h2 id="CurrentPhCaptureTime">-</h2>
+                    </div>
+                    <div class="column-center">
+                        <h2>[[[AVERAGE]]]</h2>
+                        <span id="AverageHourPhValue">-</span>
+                        <h2>[[[PAST HOUR]]]</h2>
+                    </div>
+                    <div class="column-right">
+                        <h2>[[[AVERAGE]]]</h2>
+                        <span id="AverageDayPhValue">-</span>
+                        <h2 id="LastDayPhCaptureTime">-</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div id="ph-chart"></div>
+        </div>
+    </div>
+
+    <div id="WaterTempContainer" class="col-md-6">
+        <div class="wrapper">
+            @if (ViewBag.HasFahrenheitSetting == true)
+            {
+                <h3 class="graph-header">[[[Water Temperature (°F)]]]</h3>
+            }
+            else
+            {
+                <h3 class="graph-header">[[[Water Temperature (°C)]]]</h3>
+            }
+            <div class="sparkline-container">
+                <div>
+                    <div class="column-left">
+                        <h2>[[[CURRENT]]]</h2>
+                        <span id="CurrentWaterTempValue">-</span>
+                        <h2 id="CurrentWaterTempCaptureTime">-</h2>
+                    </div>
+                    <div class="column-center">
+                        <h2>[[[AVERAGE]]]</h2>
+                        <span id="AverageHourWaterTempValue">-</span>
+                        <h2>[[[PAST HOUR]]]</h2>
+                    </div>
+                    <div class="column-right">
+                        <h2> [[[AVERAGE]]]</h2>
+                        <span id="AverageDayWaterTempValue">-</span>
+                        <h2 id="LastDayWaterTempCaptureTime">-</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div id="watertemp-chart"></div>
+
+        </div>
+    </div>
+
+    <div id="AirTempContainer" class="col-md-6">
+
+        <div class="wrapper">
+            @if (ViewBag.HasFahrenheitSetting == true)
+            {
+                <h3 class="graph-header">[[[Air Temperature (°F)]]]</h3>
+            }
+            else
+            {
+                <h3 class="graph-header">[[[Air Temperature (°C)]]]</h3>
+            }
+            <div class="sparkline-container">
+                <div>
+                    <div class="column-left">
+                        <h2>[[[CURRENT]]]</h2>
+                        <span id="CurrentAirTempValue">-</span>
+                        <h2 id="CurrentAirTempCaptureTime">-</h2>
+                    </div>
+                    <div class="column-center">
+                        <h2>[[[AVERAGE]]]</h2>
+                        <span id="AverageHourAirTempValue">-</span>
+                        <h2>[[[PAST HOUR]]]</h2>
+                    </div>
+                    <div class="column-right">
+                        <h2>[[[AVERAGE]]]</h2>
+                        <span id="AverageDayAirTempValue">-</span>
+                        <h2 id="LastDayAirTempCaptureTime">-</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div id="airtemp-chart"></div>
+        </div>
+    </div>
+
+    <div id="HumidityContainer" class="col-md-6">
+        <div class="wrapper">
+            <h3 class="graph-header">[[[Humidity (%)]]]</h3>
+            <div class="sparkline-container">
+                <div>
+                    <div class="column-left">
+                        <h2>[[[CURRENT]]]</h2>
+                        <span id="CurrentHumidityValue">-</span>
+                        <h2 id="CurrentHumidityCaptureTime">-</h2>
+                    </div>
+                    <div class="column-center">
+                        <h2>[[[AVERAGE]]]</h2>
+                        <span id="AverageHourHumidityValue">-</span>
+                        <h2>[[[PAST HOUR]]]</h2>
+                    </div>
+                    <div class="column-right">
+                        <h2>[[[AVERAGE]]]</h2>
+                        <span id="AverageDayHumidityValue">-</span>
+                        <h2 id="LastDayHumidityCaptureTime">-</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div id="humidity-chart"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="performanceModal" tabindex="-1" role="dialog" aria-labelledby="performanceModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30">
+                        <path class="modal-close" d="M15,30A15,15,0,1,1,30,15,15.017,15.017,0,0,1,15,30ZM15,3A12,12,0,1,0,27,15,12.014,12.014,0,0,0,15,3Z" transform="translate(0 0)" />
+                        <path class="modal-close" d="M9,0,5.561,3.44,2.121,0,0,2.121l3.44,3.44L0,9l2.121,2.121,3.44-3.44L9,11.121,11.121,9l-3.44-3.44,3.44-3.44Z" transform="translate(9.44 9.44)" />
+                    </svg>
+                </button>
+                <div class="image-container">
+                    <img src="" alt="" class="img-responsive">
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="company-name">
+
+                        </div>
+                        <div class="company-logo">
+                            <img src="" alt="" class="img-responsive">
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="contacts">
+                            <div class="title">
+                            </div>
+                            <ul>
+                                <li>[[[Email:]]] <a class="mail"></a></li>
+                                <li>[[[Phone:]]] <a class="phone"></a></li>
+                                <li class="btc">[[[Best to contact:]]] <span class="best-to-contact"></span></li>
+                                <li class="loc">[[[Location:]]] <span class="location"></span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="performance-box">
+                    <div class="title">
+                        [[[PERFORMANCE]]]
+                    </div>
+                    <div class="stats">
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <div>[[[EST. PROD.]]]</div>
+                                <span class="Average-Monthly-Production"></span>kg
+                                <div>[[[PER MONTH]]]</div>
+                            </div>
+                            <div class="col-xs-4">
+                                <div>[[[CO2 SAVED]]]</div>
+                                <span class="Average-Monthly-Spared-CO2"></span>kg
+                                <div>[[[PER MONTH]]]</div>
+                            </div>
+                            <div class="col-xs-4">
+                                <div>[[[SINCE]]]</div>
+                                <span class="Online-Since-Weeks"></span>
+                                <div>[[[WEEKS]]]</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="add-event" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30">
+                        <path class="modal-close" d="M15,30A15,15,0,1,1,30,15,15.017,15.017,0,0,1,15,30ZM15,3A12,12,0,1,0,27,15,12.014,12.014,0,0,0,15,3Z" transform="translate(0 0)" />
+                        <path class="modal-close" d="M9,0,5.561,3.44,2.121,0,0,2.121l3.44,3.44L0,9l2.121,2.121,3.44-3.44L9,11.121,11.121,9l-3.44-3.44,3.44-3.44Z" transform="translate(9.44 9.44)" />
+                    </svg>
+                </button>
+                <h5 class="modal-title" id="exampleModalCenterTitle">[[[Add Event]]]</h5>
+            </div>
+            <div class="modal-body">
+                <h3 class="modal-group-title">[[[Log your Actions / Events here]]]</h3>
+                <div id="event-type-tiles" class="radio-tile-group">
+
+                </div>
+
+                <h3 id="event-item-caption" class="modal-group-title">[[[Please select more detailed option]]]</h3>
+                <div id="event-item-tiles" class="radio-tile-group form-group">
+
+                </div>
+
+                <div class="form-row form-group note-row">
+                    <div class="note">
+                        <input name="event-note" type="text" class="form-control note-item" placeholder="Note">
+                    </div>
+                    <div class="year">
+                        <input id="datepicker-here" data-language='en' data-date-format="M dd, yyyy" name="event-date" type="text" class="form-control text-center" placeholder="Jun 01, 2019">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="popup-textarea"></label>
+                    <textarea class="form-control" id="popup-textarea" rows="3" name="event-description" placeholder="Detailed event description"></textarea>
+                </div>
+                <div class="ug-error-message"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-popup" data-dismiss="modal">[[[Cancel]]]</button>
+                <button type="button" class="btn btn-primary btn-popup anim" onclick="AddEvent()">[[[OK]]]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/x-kendo-tmpl" id="template">
+    <div class="eventType">
+        <h2>#:name#</h2>
+        <h3 style="visibility:hidden">#:Id#</h3>
+    </div>
+</script>
+
+<style>
+    #statsContainerTop {
+        position: relative;
+    }
+
+    #main-section-header {
+        display: block;
+    }
+
+    .datepickers-container .datepicker {
+        z-index: 2001;
+    }
+
+    .datepicker--cell.-selected-, .datepicker--cell.-selected-.-current- {
+        background: #2EA636;
+    }
+
+    .datepicker--cell.-focus- {
+        border: 1px solid #2EA636;
+    }
+
+    .datepicker--cell.-selected-.-focus-, .datepicker--cell.-selected-.-current-.-focus- {
+        background: #2EA636;
+    }
+
+    .datepicker--cell.-current- {
+        color: #2ea636;
+    }
+
+    .datepicker--day-name {
+        color: #e54848;
+    }
+
+    .eventType {
+        float: left;
+        width: 120px;
+        height: 60px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        padding: 5px;
+        cursor: pointer;
+    }
+
+    #listViewEventTypeDiv {
+        margin-top: 20px;
+        margin-bottom: 10px;
+    }
+
+    #listViewEventTypeItemsDiv {
+        margin-top: 200px;
+        margin-bottom: 10px;
+    }
+
+    #pHContainer, #WaterTempContainer, #AirTempContainer, #HumidityContainer {
+        padding: 0;
+    }
+
+    .sparkline-container {
+        padding-bottom: 30px;
+        margin-bottom: 15px;
+        background: url('/Content/images/footer-dots.png') repeat-x;
+        background-position: bottom;
+    }
+
+    .a-right {
+        text-align: right;
+    }
+
+    .graph-header {
+        text-align: center;
+        font-size: 1.4rem;
+        padding: 25px;
+        font-family: Roboto-Thin;
+    }
+
+    .k-window.k-dialog {
+        position: absolute;
+    }
+
+    .wrapper {
+        background-color: white;
+        border-radius: 17px 17px;
+        margin: 15px;
+    }
+
+    #main-section {
+        font-family: Roboto-Regular;
+    }
+
+
+    #ph-chart, #watertemp-chart, #airtemp-chart, #humidity-chart {
+        height: 400px;
+    }
+
+    .change-graph {
+        border: 2px solid #D5EDD6;
+        padding: 0.5em;
+        border-radius: 15px;
+        color: #2EA636;
+        font-size: 14px;
+    }
+
+    .btn-green {
+        margin: 0.5em;
+        padding: .55em 1em;
+    }
+
+    .k-loading-mask {
+        opacity: 0;
+    }
+
+
+    .column-left {
+        color: #707070;
+        float: left;
+        width: 33%;
+        text-align: center;
+        font-size: 14px;
+    }
+
+    .sticky-panel {
+        background: #eee;
+        z-index: 999;
+        top: 0;
+        position: sticky;
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 15px;
+        align-items: center;
+    }
+
+        .sticky-panel .unit-dropdown {
+            display: inline-block;
+        }
+
+        .sticky-panel .left-buttons-section .btn,
+        .sticky-panel .right-buttons-section .btn {
+            min-width: 135px;
+        }
+
+    @@media (max-width: 1150px) {
+        .sticky-panel {
+            flex-direction: column;
+        }
+    }
+
+    @@media (max-width: 590px) {
+        .sticky-panel {
+            position: relative;
+        }
+
+            .sticky-panel .right-buttons-section,
+            .sticky-panel .left-buttons-section {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+            }
+
+                .sticky-panel .left-buttons-section .unit-dropdown {
+                    margin: 2px 0;
+                }
+
+                .sticky-panel .left-buttons-section .btn,
+                .sticky-panel .right-buttons-section .btn {
+                    margin: 7px 0;
+                }
+
+                .sticky-panel .left-buttons-section .btn,
+                .sticky-panel .right-buttons-section .btn,
+                .sticky-panel .right-buttons-section .unit-dropdown,
+                .sticky-panel .right-buttons-section .unit-dropdown .change-graph {
+                    width: 100%;
+                }
+    }
+
+    .left-buttons-section .btn-transparent {
+        background: #e7e0d5;
+        color: #2b5a2e;
+        font-weight: 700;
+        letter-spacing: .5px;
+    }
+
+    .right-buttons-section,
+    .left-buttons-section {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+        .right-buttons-section .change-graph {
+            padding: 0.7em;
+        }
+
+        .right-buttons-section .btn-green {
+            letter-spacing: .5px;
+            margin: 0.5em;
+        }
+
+    .column-right {
+        color: #707070;
+        float: right;
+        width: 33%;
+        text-align: center;
+        font-size: 14px;
+    }
+
+    .column-center {
+        color: #707070;
+        display: inline-block;
+        width: 33%;
+        text-align: center;
+        font-size: 14px;
+    }
+
+    .wrapper span {
+        font-weight: bold;
+        color: #2EA636;
+        font-size: 27px;
+        line-height: 38px;
+    }
+
+    .column-left span:first-of-type {
+        color: #E54848;
+    }
+
+    #productionUnits-grid {
+        padding: 15px;
+    }
+
+    .btn-green-sm {
+        display: none;
+    }
+
+    .btn-transparent:hover,
+    .btn-transparent:focus,
+    .fill:hover,
+    .fill:focus {
+        outline: none;
+        border-radius: 20px 20px;
+        box-shadow: inset 0 0 0 2em #2EA636;
+    }
+
+    .btn-transparent,
+    .fill {
+        position: relative;
+        min-width: 130px;
+        font-size: 14px;
+        color: #2EA636;
+        transition: .5s;
+    }
+
+        .btn-transparent:hover,
+        .btn-transparent:focus,
+        .fill:hover, .fill:focus {
+            border-color: #2EA636;
+            color: #fff;
+        }
+
+    .btn-transparent,
+    .fill {
+        border-radius: 20px 20px;
+        background: none;
+        border: 2px solid #2EA636;
+        font: inherit;
+        font-size: 14px;
+        color: #707070;
+        line-height: 1;
+        margin: 0.5em;
+        padding: .8em 1em;
+    }
+
+        .fill::after {
+            content: "";
+            position: absolute;
+            display: block;
+            left: 50%;
+            top: 50%;
+            width: 90px;
+            height: 90px;
+            margin: -45px;
+            -webkit-border-radius: 50%;
+            border-radius: 50%;
+            background-image: url(/Content/images/dots_anim.svg);
+            -webkit-animation: infinite-rotate 15s infinite linear;
+            animation: infinite-rotate 15s infinite linear;
+        }
+
+    .btn-popup.anim {
+        position: relative;
+    }
+
+        .btn-popup.anim::after {
+            content: "";
+            position: absolute;
+            display: block;
+            left: 50%;
+            top: 50%;
+            width: 90px;
+            height: 90px;
+            margin: -45px;
+            -webkit-border-radius: 50%;
+            border-radius: 50%;
+            background-image: url(/Content/images/dots_anim.svg);
+            -webkit-animation: infinite-rotate 15s infinite linear;
+            animation: infinite-rotate 15s infinite linear;
+        }
+
+    @@-webkit-keyframes infinite-rotate {
+        from {
+            -webkit-transform: rotate(0deg);
+        }
+
+        to {
+            -webkit-transform: rotate(359deg);
+        }
+    }
+
+
+    @@media (max-width: 1200px) {
+        #main-section-header h2 {
+            text-align: center;
+            padding-left: 0px !important;
+        }
+    }
+
+    @@media (max-width: 991px) {
+        #title {
+            line-height: 20px;
+        }
+    }
+
+
+    @@media (max-width: 500px) {
+        #ph-chart, #watertemp-chart, #airtemp-chart, #humidity-chart {
+            height: 300px;
+        }
+
+        .buttons-section {
+        }
+    }
+
+    @@media (max-width: 768px) {
+        #title {
+            line-height: 20px !important;
+        }
+    }
+</style>
+
+
+
+<script type="text/javascript">
+    function error_handler(e) {
+        if (e.errors) {
+            var measure = "Errors:\n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        measure += this + "\n";
+                    });
+                }
+            });
+            alert(measure);
+        }
+    }
+</script>

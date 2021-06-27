@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="228.122" height="225.115" viewBox="0 0 228.122 225.115">
+  <defs>
+    <clipPath id="clip-path">
+      <circle id="Mask" cx="99.5" cy="99.5" r="99.5" fill="#70a0ad"/>
+    </clipPath>
+    <linearGradient id="linear-gradient" x1="0.5" x2="0.5" y2="0.849" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#2ea636"/>
+      <stop offset="1" stop-color="#2ea636" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <g id="Artwork" transform="translate(0 -0.885)">
+    <g id="scenery" transform="translate(0 27)">
+      <circle id="Mask-2" data-name="Mask" cx="99.5" cy="99.5" r="99.5" fill="#f1ebe2"/>
+      <g id="scenery-2" data-name="scenery" clip-path="url(#clip-path)">
+        <path id="Combined_Shape" data-name="Combined Shape" d="M0,219.711V57.629s5.06,1.823,13.514,4.665a39.474,39.474,0,0,1,3.155-14.8,25.665,25.665,0,1,1,39.068-24,39.4,39.4,0,0,1,18.55,6.033,39.627,39.627,0,0,1,60.78,33.5,39.438,39.438,0,0,1,21.781,6.519A39.624,39.624,0,0,1,192.7,46.823c.219,0,.436,0,.654.005A39.623,39.623,0,1,1,257.53,70.183V219.711Z" transform="translate(-13.507 9.005)" fill="url(#linear-gradient)"/>
+        <g id="Group" transform="translate(-5.403 88.244)">
+          <path id="Combined_Shape-2" data-name="Combined Shape" d="M143.288,171.147V83.768H124.8v87.379H84.6V83.768H66.107v87.379h-40.2V83.768H0V47.7H25.908V15.425A3.239,3.239,0,0,1,27.25,12.8L44.11.614a3.238,3.238,0,0,1,3.8,0L64.765,12.8a3.241,3.241,0,0,1,1.342,2.626V47.7H84.6V15.839a4.048,4.048,0,0,1,1.678-3.282l16.05-11.6a4.05,4.05,0,0,1,4.745,0l16.049,11.6a4.048,4.048,0,0,1,1.678,3.282V47.7h18.491V15.839a4.051,4.051,0,0,1,1.678-3.282l16.05-11.6a4.05,4.05,0,0,1,4.745,0l16.05,11.6a4.051,4.051,0,0,1,1.678,3.282V47.7H210.2V83.768H183.488v87.379Z" transform="translate(0.205 0.758)" fill="#fff"/>
+        </g>
+        <path id="Path_6" data-name="Path 6" d="M95.993,194.42C91.069,188.041,81.472,183.8,81.472,183.8c-23.154-6.778-63.818-6.173-79.09-45.784-14-36.3,37.633-71.244,52.078-55.947,10.235,10.84-2.884,26.472-21.09,24.716C12.879,104.807.766,86.481,4.807,66.77,12.822,27.671,74.442,1.8,77.04,0" transform="matrix(-0.07, -0.998, 0.998, -0.07, -49.807, 174.234)" fill="none" stroke="#e54848" stroke-miterlimit="10" stroke-width="3" stroke-dasharray="7 7"/>
+      </g>
+    </g>
+    <g id="rocket" transform="translate(124)">
+      <path id="Path_8_Copy" data-name="Path 8 Copy" d="M0,38.308V18.944L-37.691,0Z" transform="translate(55.54 86.988) rotate(90)" fill="#d8d2c9"/>
+      <path id="Path_8" data-name="Path 8" d="M0,36,.74,18.679,36.556,0Z" transform="translate(17.263 51.113)" fill="#e5ded3"/>
+      <path id="Triangle" d="M36.5,0,73,73H48.679L36.5,35.426,24.327,73H0Z" transform="translate(52.503 0.884) rotate(45)" fill="#fafafa"/>
+    </g>
+  </g>
+</svg>

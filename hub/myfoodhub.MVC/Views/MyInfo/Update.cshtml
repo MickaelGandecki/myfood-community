@@ -1,0 +1,260 @@
+﻿@using myfoodapp.Hub.Models
+@model UserViewModel
+
+@{
+	ViewBag.Title = "Index";
+}
+
+<script type="text/javascript">
+
+	$.urlParam = function (name) {
+		var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+		if (results == null) {
+			return null;
+		}
+		else {
+			return decodeURI(results[1]) || 0;
+		}
+	}
+
+	window.onload = function onLoad(e) {
+
+		var get = decodeURIComponent($.urlParam('error'));
+		if (get != "null") {
+			$(".error").text(get);
+		}
+
+		$.ajax({
+			url: "@Url.Action("Languages_Read", "MyInfo")",
+			dataType: "json",
+			data: { },
+			type: "POST",
+			success: function (response) {
+				$.each(response, function () {
+					$("#language-dropdown").append($("<option />").val(this.Id).text(this.name));
+				});
+				$("#language-dropdown").val(@Model.Language);
+
+			}
+		});
+
+
+        var OneSignal = window.OneSignal || [];
+        OneSignal.push(["init", {
+            appId: "674761cf-c65d-4eaa-adc7-960d13fe4e54",
+            autoRegister: false,
+            notifyButton: {
+                enable: true
+            },
+            prenotify: true,
+            showCredit: false,
+            size: 'large',
+            welcomeNotification: {
+                "title": "Myfood Smart Push Enabled",
+                "message": "You will received messages from your Prod. Unit",
+            }
+        }]);
+    }
+
+    OneSignal.push(function () {
+        OneSignal.on('subscriptionChange', function (isSubscribed) {
+            console.log("The user's subscription state is now:", isSubscribed);
+            OneSignal.getUserId(function (userId) {
+                console.log("OneSignal User ID:", userId);
+                $.ajax({
+                    url: "@Url.Action("AddPushNotification", "MyInfo")",
+                    dataType: "json",
+                    data: { id: userId },
+                    type: "POST",
+                    success: function (response) {
+                        console.log("Production Owner Registered");
+                }
+            });
+            });
+        });
+    });
+
+	$(".btn-infosave").on("click", function () {
+		document.getElementsByClassName("update-form").submit();
+	})
+
+</script>
+
+<div id="main-section-header" class="row">
+	<h2 id="title" class="col-md-3">[[[My Information]]]</h2>
+	<div style="clear:both;"></div>
+</div>
+
+<div class="flex-block">
+	<form action="/MyInfo/Update" class="update-form" method="post" role="form">
+
+		@using (Html.BeginForm("Update", "MyInfo", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+		{
+			var checkedda = Model.IsMailNotificationActivated == true ? "checked" : "";
+			@Html.AntiForgeryToken()
+			<div class="error">
+			</div>
+			<div class="i-wrapper">
+				<label class="input-caption">[[[Login Identification]]]</label>
+				<input class="default-input" type="email" name="Login" readonly value="@Model.Login" />
+			</div>
+			<div class="i-wrapper">
+				<label class="input-caption">
+					[[[Enable Notification Email]]]
+				</label>
+				<label for="IsMailNotificationActivated" class="checkbox-container">
+					@Html.CheckBox("IsMailNotificationActivated", Model.IsMailNotificationActivated)
+					<span class="checkmark"></span>
+				</label>
+
+
+			</div>
+			<div class="i-wrapper">
+				<label class="input-caption">[[[Notification Email]]]</label>
+				<input class="default-input" type="email" name="NotificationEmail" value="@Model.NotificationEmail" />
+			</div>
+			<div class="i-wrapper">
+				<label class="input-caption">[[[Old Password]]]</label>
+				<input class="default-input" type="password" name="OldPassword" />
+			</div>
+			<div class="i-wrapper">
+				<label class="input-caption">[[[New Password]]]</label>
+				<input class="default-input" type="password" name="NewPassword" />
+			</div>
+			<div class="i-wrapper">
+				<label class="input-caption">[[[Choose the application default language]]]</label>
+				<select name="Language" class="default-input" id="language-dropdown"></select>
+			</div>
+			<div class="i-wrapper">
+				<label class="input-caption">
+					[[[Display the temperature into Farenheit]]]
+				</label>
+				<label for="HasFahrenheitSetting" class="checkbox-container">
+					@Html.CheckBox("HasFahrenheitSetting", Model.HasFahrenheitSetting)
+					<span class="checkmark"></span>
+				</label>
+			</div>
+			<div class="i-wrapper-btn">
+				<button class="btn-infosave">[[[Save]]]</button>
+			</div>
+		}
+	</form>
+</div>
+
+
+<style type="text/css">
+
+	.error {
+		text-align: center;
+		color: red;
+	}
+
+	.flex-block {
+		margin-top: 50px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.i-wrapper {
+		margin: 20px 0 20px 0;
+	}
+
+	#main-section {
+		background: none;
+	}
+
+	.update-form {
+		font-family: 'Roboto-Thin';
+		margin-top: 300px;
+		font-size: 16px;
+		width: 80%;
+		margin: auto;
+		box-shadow: 0 0 20px #F3F6F8;
+		border-radius: 10px;
+		padding: 40px;
+	}
+
+	.i-wrapper .default-input {
+		padding-left: 15px;
+		font-weight: bold;
+		color: #2EA636;
+		height: 50px;
+		width: 100%;
+		border: 3px solid #F3F6F8;
+		border-radius: 7px;
+	}
+
+	.i-wrapper-btn {
+		margin: 20px 0 20px 0;
+		text-align: right;
+	}
+	.btn-infosave {
+		position: relative;
+		background: none;
+		border-radius: 25px;
+		padding: 10px 60px 10px 60px;
+		color: #2EA636;
+		border: 2px solid rgba(46,166,54, .5);
+		margin-top: 25px;
+		transition: .5s;
+	}
+
+	.input-caption {
+		color: #6C7A73;
+		display: block;
+		margin: 10px 0 10px 0;
+	}
+
+	input:-webkit-autofill,
+	input:-webkit-autofill:hover,
+	input:-webkit-autofill:focus
+	textarea:-webkit-autofill,
+	textarea:-webkit-autofill:hover
+	textarea:-webkit-autofill:focus,
+	select:-webkit-autofill,
+	select:-webkit-autofill:hover,
+	select:-webkit-autofill:focus {
+		border: 0;
+		-webkit-text-fill-color: #2EA636;
+		transition: background-color 5000s ease-in-out 0s;
+	}
+
+	.default-input:focus {
+		outline: none;
+	}
+
+	.btn-infosave:hover,
+	.btn-infosave:focus {
+		outline: none;
+		border-radius: 20px 20px;
+		box-shadow: inset 0 0 0 2em rgba(46,166,54, .5);
+	}
+
+	.btn-infosave::after {
+		content: "";
+		position: absolute;
+		display: block;
+		left: 50%;
+		top: 50%;
+		width: 90px;
+		height: 90px;
+		margin: -45px;
+		-webkit-border-radius: 50%;
+		border-radius: 50%;
+		background-image: url(/Content/images/dots_anim.svg);
+		-webkit-animation: infinite-rotate 15s infinite linear;
+		animation: infinite-rotate 15s infinite linear;
+		transition: .5s;
+	}
+
+	@@-webkit-keyframes infinite-rotate {
+		from {
+			-webkit-transform: rotate(0deg);
+		}
+
+		to {
+			-webkit-transform: rotate(359deg);
+		}
+	}
+</style>

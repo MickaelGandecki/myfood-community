@@ -1,0 +1,221 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{69A1435D-195C-4FE6-B1DA-00DF57773D63}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>myfoodapp.WebServer</RootNamespace>
+    <AssemblyName>myfoodapp.WebServer</AssemblyName>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
+    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.17763.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+    <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
+    <PlatformTarget>ARM</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\ARM\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>ARM</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
+    <PlatformTarget>ARM</PlatformTarget>
+    <OutputPath>bin\ARM\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>ARM</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="WebServerEngine.cs" />
+    <Compile Include="HomeController.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Properties\myfoodapp.WebServer.rd.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
+      <Version>5.2.3</Version>
+    </PackageReference>
+    <PackageReference Include="Restup">
+      <Version>1.0.0</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Web\content\favicon.ico" />
+    <Content Include="Web\content\gpl.png" />
+    <Content Include="Web\content\logoMyFoodFooter.png" />
+    <Content Include="Web\content\logoMyFoodTiny.png" />
+    <Content Include="Web\css\bootstrap-datetimepicker.css" />
+    <Content Include="Web\css\bootstrap-datetimepicker.min.css" />
+    <Content Include="Web\css\bootstrap-theme.css" />
+    <Content Include="Web\css\bootstrap-theme.min.css" />
+    <Content Include="Web\css\bootstrap.css" />
+    <Content Include="Web\js\bootstrap-datetimepicker.js" />
+    <Content Include="Web\js\bootstrap-datetimepicker.min.js" />
+    <Content Include="Web\js\bootstrap.js" />
+    <Content Include="Web\css\bootstrap.min.css" />
+    <Content Include="Web\js\bootstrap.min.js" />
+    <Content Include="Web\js\dygraph-combined.js" />
+    <Content Include="Web\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Web\index.html" />
+    <Content Include="Web\js\jquery-3.2.1.min.js" />
+    <Content Include="Web\js\jquery.csv.min.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.ar.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.az.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.bg.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.bn.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.ca.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.cs.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.da.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.de.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.ee.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.el.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.es.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.fi.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.fr.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.he.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.hr.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.hu.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.hy.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.id.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.is.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.it.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.ja.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.ka.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.ko.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.lt.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.lv.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.ms.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.nb.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.nl.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.no.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.pl.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.pt-BR.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.pt.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.ro.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.rs-latin.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.rs.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.ru.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.sk.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.sl.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.sv.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.sw.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.th.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.tr.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.ua.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.uk.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.zh-CN.js" />
+    <Content Include="Web\js\locales\bootstrap-datetimepicker.zh-TW.js" />
+    <Content Include="Web\js\npm.js" />
+    <Content Include="Web\css\theme.min.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Web\css\bootstrap-theme.css.map" />
+    <None Include="Web\css\bootstrap.css.map" />
+    <None Include="Web\css\bootstrap.less" />
+    <None Include="Web\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Web\fonts\glyphicons-halflings-regular.ttf" />
+    <None Include="Web\fonts\glyphicons-halflings-regular.woff" />
+    <None Include="Web\fonts\glyphicons-halflings-regular.woff2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\myfoodapp.Business\myfoodapp.Business.csproj">
+      <Project>{ad00c69b-4b59-4553-89ea-49822a91edfd}</Project>
+      <Name>myfoodapp.Business</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\myfoodapp.Model\myfoodapp.Model.csproj">
+      <Project>{eef3d211-2b1c-403f-adc2-8601de17afee}</Project>
+      <Name>myfoodapp.Model</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
+    <VisualStudioVersion>14.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

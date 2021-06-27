@@ -1,0 +1,30 @@
+﻿<Page
+    x:Class="myfoodapp.Views.LoadingPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:myfoodapp.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:Primitives="using:Telerik.UI.Xaml.Controls.Primitives"
+    mc:Ignorable="d">
+
+    <Grid Background="{StaticResource AppBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <TextBlock Style="{StaticResource ModuleTitleText}" HorizontalAlignment="Left" Text="Loading..."/>
+        <Grid Grid.Row="1">
+            <TextBlock x:Name="txtInfo" Style="{StaticResource ModuleTitleText}" HorizontalAlignment="Left" Text="Loading..."/>
+        </Grid>
+
+        <Primitives:RadBusyIndicator IsActive="True" IndicatorAnimationStyle="{StaticResource DefaultIndicatorAnimation}">
+            <Primitives:RadBusyIndicator.ContentTemplate>
+                <DataTemplate>
+
+                </DataTemplate>
+            </Primitives:RadBusyIndicator.ContentTemplate>
+        </Primitives:RadBusyIndicator>
+    </Grid>
+
+</Page>

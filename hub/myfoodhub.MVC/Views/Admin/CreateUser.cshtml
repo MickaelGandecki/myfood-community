@@ -1,0 +1,98 @@
+﻿@model myfoodapp.Hub.Models.ExpandedUser
+
+<script type="text/javascript">
+
+    function onBackToUserListClick() {
+        window.location = window.location.origin + "/Admin/Index/";
+    }
+
+</script>
+
+<div id="main-section-header" class="row">
+    <h2 id="title" class="col-md-3">[[[Edit Roles]]]</h2>
+    <div style="clear:both;"></div>
+</div>
+
+<div id="productionUnits-grid" class="main-section-content row">
+    <div id="productionUnits-details" class="col-md-2">
+        <h3 class="section-header">[[[Create Users]]]</h3>
+
+        <br />
+
+        <div id="managementButton">
+            <p>
+                    @(Html.Kendo().Button()
+                .Name("backToUserListButton")
+                .HtmlAttributes(new { @class = "toggleButton btn-block", @style = "height: 50px; color: #FFFFFF; background-color: #018001;" })
+                .Content("[[[Back to User List]]]")
+                .Events(ev => ev.Click("onBackToUserListClick")))
+                </p>
+
+                <br />
+        </div>
+    </div>
+    <div id="grid-container" class="col-md-10" style="padding-top:20px; padding-bottom:40px">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal" style="margin-top: 10px;">
+                <h4 style="font-weight:bold;">Create User</h4>
+                <hr />
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Email,
+                    htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Email,
+                        new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Email, "",
+                        new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Password,
+                    htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.PasswordFor(model => model.Password,
+                        new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Password,
+                        "",
+                        new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Roles,
+                    htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.DropDownList("Roles")
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Save" class="btn btn-default btn-action" />
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    a.EditUser {
+        color: #018001 !important;
+    }
+
+    .pagination > .active > a {
+        background-color: #018001 !important;
+        border-color: #018001 !important;
+    }
+
+    .pagination > li > a {
+        color: #000000 !important;
+    }
+</style>

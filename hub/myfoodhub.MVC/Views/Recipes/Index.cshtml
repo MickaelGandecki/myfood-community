@@ -1,0 +1,361 @@
+﻿@using myfoodapp.Hub.Business
+@using Microsoft.Ajax.Utilities
+@model myfoodapp.Hub.Business.GrowingModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="~/Content/slick.css" />
+<link rel="stylesheet" href="~/Content/slick-theme.css" />
+<script src="~/Scripts/slick.min.js"></script>
+
+
+<script>
+    function onSelect(e) {
+        var dataItem = this.dataItem(e.item);
+    }
+</script>
+
+<div id="main-section-header" class="row">
+    <h2 id="title" class="col-md-3">[[[Recipes]]]</h2>
+    <div style="clear:both;"></div>
+</div>
+
+<div class="container month-carousel-container" style="padding-top: 60px">
+    <div class="container">
+        <div class="months-carousel__navigation">
+            @foreach (var productionMonths in @Model.productionMonths)
+            {
+                <div>@(productionMonths.month.name)</div>
+            }
+        </div>
+    </div>
+</div>
+<br>
+<div class="container">
+    <div class="months-carousel__content">
+        @foreach (var item in @Model.productionMonths)
+        {
+            <div class="container">
+                <div class="card-filter">
+                    @foreach (var productionArea in item.productionAreas)
+                    {
+                        for (int i = 0; i < productionArea.productionTypes.Count; i++)
+                        {
+                            var productionType = new { i = i, value = productionArea.productionTypes[i] };
+                            <button class="btn-filter @(productionType.i == 0 ? "active" : "")">@((object)productionType.value.name)</button>
+                        }
+                    }
+                </div>
+                <div class="row mx-xs-15px">
+                    @foreach (var productionArea in item.productionAreas)
+                    {
+                        for (int i = 0; i < productionArea.productionTypes.Count; i++)
+                        {
+                            var productionType = new { i = i, value = productionArea.productionTypes[i] };
+                            foreach (var slot in productionType.value.slots)
+                            {
+                                <div class="col-md-6 col-lg-3 col-sm-6 col-xs-12" style="display: @(productionType.i != 0 ? "none" : "block")" data-type="@productionType.value.name">
+                                    <div class="card-block">
+                                        <div class="card-block__haeder">
+                                            <img class="card-block-image" src="/Content/Pictures/Recipes/@slot.vegetable.imagePath" alt="" />
+                                        </div>
+                                        <div class="card-block__body">
+                                            <div class="card-block__body_content">
+                                                <p class="card-block__body__title  --green-paly">@(slot.number)X @slot.id</p>
+                                                <p class="card-block__body__title  --green --md">@slot.vegetable.name</p>
+                                                @if (slot.isSeed == false && slot.oneCropPerSlot == false)
+                                                {
+                                                    <p class="card-block__body__title  --red">@slot.vegetable.itemPerSlot [[[plants per slot]]]</p>
+                                                }
+                                                @if (slot.isSeed == false && slot.oneCropPerSlot == true)
+                                                {
+                                                    <p class="card-block__body__title  --red">1 [[[plant per slot]]]</p>
+                                                }
+                                                @if (slot.isSeed == true && slot.oneCropPerSlot == false)
+                                                {
+                                                    <p class="card-block__body__title  --red">@slot.vegetable.itemPerSlot [[[crop(s) per plug]]]</p>
+                                                }
+                                                <p class="card-block__body__title  --red">[[[Position]]] @slot.position.name</p>
+                                            </div>
+                                            <div class="card-block__body_content">
+                                                <p class="card-block__body__title --green-paly ">@(slot.vegetable.growingState.name)</p>
+                                                <p class="card-block__body__title --green --md">@Convert.ToInt32(slot.vegetable.productionQuantity)g</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    }
+                </div>
+            </div>
+        }
+
+
+    </div>
+</div>
+
+<script>
+
+	function startSlick() {
+		var monthNow = new Date().getUTCMonth();
+		$('.months-carousel__navigation').slick({
+			slidesToShow: @(Model.productionMonths.Count < 5 ? Model.productionMonths.Count-1 : 5),
+			slidesToScroll: 1,
+			initialSlide: monthNow,
+			centerMode: true,
+			focusOnSelect: true,
+			responsive: [
+				{
+					breakpoint: 1025,
+					settings: {
+						slidesToShow: 3,
+					}
+				},
+				{
+					breakpoint: 426,
+					settings: {
+						slidesToShow: 1,
+					}
+				}
+			]
+		});
+		$('.months-carousel__content').slick({
+			slidesToShow: 1,
+			slidesToScroll: 1,
+			initialSlide: monthNow,
+			accessibility: false,
+			arrows: false,
+			draggable: false,
+			swipe: false,
+		});
+	}
+	$(document).ready(function () {
+
+		$(".card-block-image").on("error", function() {
+			$(this).attr("src", "/Content/Pictures/Sites/NoImage.png")
+		})
+
+		startSlick();
+		$(".months-carousel__content .card-filter .btn-filter").on("click", function () {
+			let btnWrapper = $(this).parent();
+			$(btnWrapper).children().removeClass("active");
+			$(this).addClass("active");
+
+			let container = $(btnWrapper).parent();
+			let btnText = $(this).text();
+			let allTiles = $(container).find("[data-type]");
+			$(allTiles).hide();
+			console.log(btnText);
+			let tilesToShow = $(container).find("[data-type='" + btnText + "']");
+			$(tilesToShow).show();
+
+
+		})
+
+        $('.months-carousel__navigation').on('beforeChange', function (e, slick, prevSlide, currentSlide) {
+            $('.months-carousel__content').slick('slickGoTo', currentSlide);
+        });
+
+	});
+</script>
+
+<style>
+
+    .months-carousel__content .card-filter {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 30px 0;
+    }
+
+
+
+        .months-carousel__content .card-filter .btn-filter {
+            position: relative;
+            min-width: 160px;
+            font-size: 14px;
+            color: #2EA636;
+            border-radius: 20px 20px;
+            background: none;
+            border: 2px solid #2EA636;
+            font: inherit;
+            font-size: 14px;
+            color: #707070;
+            line-height: 1;
+            margin: 0.5em;
+            padding: .8em 1em;
+            transition: 1s;
+        }
+
+            .months-carousel__content .card-filter .btn-filter.active {
+                outline: none;
+                background: #2ea636;
+                border-radius: 20px 20px;
+                box-shadow: inset 0 0 0 2em #2EA636;
+                border-color: #2EA636;
+                color: #fff;
+            }
+
+                .months-carousel__content .card-filter .btn-filter.active::after {
+                    content: "";
+                    position: absolute;
+                    display: block;
+                    left: 50%;
+                    top: 50%;
+                    width: 90px;
+                    height: 90px;
+                    margin: -45px;
+                    -webkit-border-radius: 50%;
+                    border-radius: 50%;
+                    background-image: url(/Content/images/dots_anim.svg);
+                    -webkit-animation: infinite-rotate 15s infinite linear;
+                    animation: infinite-rotate 15s infinite linear;
+                }
+
+    .months-carousel__navigation .slick-slide {
+        background: #ddd;
+        height: 50px;
+        display: flex;
+        justify-content: center;
+        cursor: pointer;
+        align-items: center;
+        font-size: 18px;
+    }
+
+    .months-carousel__navigation .slick-list {
+        background: #ddd;
+    }
+
+    .months-carousel__navigation .slick-slide.slick-current {
+        background: #e54848;
+        color: #fff;
+        border-radius: 25px;
+    }
+
+    .months-carousel__navigation .slick-arrow {
+        background: #ddd;
+        height: 100%;
+        width: 50px;
+        z-index: 1;
+    }
+
+        .months-carousel__navigation .slick-arrow:before {
+            opacity: 1;
+            top: calc(50% - 7px);
+            left: 15px;
+            content: '';
+            background: url(/Content/images/arrow.svg);
+            position: absolute;
+            width: 14px;
+            height: 14px;
+        }
+
+        .months-carousel__navigation .slick-arrow.slick-prev:before {
+            transform: rotate(180deg);
+            right: 15px;
+            left: unset;
+        }
+
+        .months-carousel__navigation .slick-arrow.slick-next {
+            border-top-right-radius: 25px;
+            border-bottom-right-radius: 25px;
+        }
+
+        .months-carousel__navigation .slick-arrow.slick-prev {
+            border-top-left-radius: 25px;
+            border-bottom-left-radius: 25px;
+        }
+
+
+    .card-block {
+        margin: 15px 0;
+        border-radius: 10px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+
+    .card-block__haeder {
+        max-height: 190px;
+        overflow: hidden;
+    }
+
+        .card-block__haeder img {
+            height: 190px;
+            width: 100%;
+        }
+
+    .card-block__body {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .card-block__body_content {
+        padding: 27px 10px;
+        border-top: 1px solid #F3F6F8;
+    }
+
+    .card-block__body__title {
+        margin: 0 0 10px;
+        text-align: center;
+        font-family: 'Open Sans', sans-serif;
+        font-size: 14px;
+    }
+
+        .card-block__body__title.--green {
+            color: #2EA636;
+        }
+
+        .card-block__body__title.--red {
+            color: #E54848;
+        }
+
+        .card-block__body__title.--green-paly {
+            color: #6C7A73;
+        }
+
+        .card-block__body__title.--md {
+            font-size: 18px;
+        }
+
+    .row.filters {
+        display: flex;
+        justify-content: center;
+    }
+
+    .filters button {
+        margin: 15px;
+    }
+
+    @@media (max-width: 449px) {
+        .mx-xs-15px {
+            margin: 0 15px;
+        }
+    }
+
+    @@media(max-width: 768px) {
+        .card-block__haeder {
+            max-height: none;
+            overflow: hidden;
+        }
+
+        .months-carousel__content .card-filter {
+            flex-direction: column;
+        }
+
+            .months-carousel__content .card-filter .btn-filter {
+                margin: 20px 0;
+                width: 230px;
+            }
+    }
+
+    @@media(max-width: 1200px) {
+        #main-section .container.month-carousel-container {
+            width: 90%;
+        }
+    }
+</style>
+

@@ -1,0 +1,166 @@
+﻿@model IEnumerable<myfoodapp.Hub.Models.Measure>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@functions {
+    private DateTime getThisWeekMonday()
+    {
+        DateTime input = DateTime.Now;
+        int delta = DayOfWeek.Monday - input.DayOfWeek;
+        DateTime monday = input.AddDays(delta);
+        return monday;
+    }}
+
+<script>
+    $(function () {
+                    $(".toggleButton").kendoButton({
+
+                    });
+
+                    kendo.init("#buttonContainer");
+
+                    $(".toggleButton").click(function () {
+                        $(".toggleButton").removeClass("k-state-active");
+                        $(this).addClass("k-state-active");
+                        var filteredDate="";
+                        if ($(this).attr("id") === "thisWeek") {
+                            filteredDate = getThisWeekMonday();
+                        }
+                        else if ($(this).attr("id") === "lastMonth") {
+                            filteredDate = getThisMonthFirstDay();
+                        }
+                        filterGrid(filteredDate);
+                    });
+
+                    function getThisMonthFirstDay() {
+                        var curr = new Date;
+                        var firstDay = new Date(curr.getFullYear(), curr.getMonth(), 1).toUTCString();
+                        return firstDay;
+                    }
+
+                    function getThisWeekMonday() {
+                        var curr = new Date;
+                        var first = curr.getDate() - curr.getDay();
+                        first = first + 2;
+                        var monday = new Date(curr.getFullYear(), curr.getMonth(), first).toUTCString();
+                        return monday;
+                    }
+
+                    function filterGrid(filteredDate) {
+                        var gridListFilter = { filters: [] };
+                        var gridDataSource = $("#grid").data("kendoGrid").dataSource;
+
+                        gridListFilter.logic = "and";   // a different logic 'or' can be selected
+                        if ($.trim(filteredDate).length > 0) {
+                            gridListFilter.filters.push({ field: "captureDate", operator: "gte", value: new Date(filteredDate) });
+                        }
+
+                        gridDataSource.filter(gridListFilter);
+                        gridDataSource.read();
+                    }
+                });
+</script>
+
+<style>
+    .timeline-section p {
+        line-height: 70px;
+        margin: 10px;
+    }
+
+        .timeline-section p .k-button {
+            height: 50px;
+        }
+</style>
+
+<div id="main-section-header" class="row">
+    <h2 id="title" class="col-md-3">[[[Measures Monitoring]]]</h2>
+</div>
+
+<div id="measure-grid" class="main-section-content row">
+    <div id="message-details" class="col-md-2">
+        <div class="timeline-section">
+            <h3 class="section-header">[[[Manage Measures from sensors]]]</h3>
+            <p>
+                <button type="button" id="thisWeek" name="thisWeek" class="toggleButton k-state-active btn-block">[[[This Week]]]</button>
+            </p>
+            <p>
+                <button type="button" id="lastMonth" name="lastMonth" class="toggleButton btn-block">[[[Last Month]]]</button>
+            </p>
+            <p>
+                <button type="button" id="all" name="all" class="toggleButton btn-block">[[[All]]]</button>
+            </p>
+        </div>
+    </div>
+    <div id="grid-container" class="col-md-10" style="padding-bottom:40px">
+        @(Html.Kendo().Grid<myfoodapp.Hub.Models.MeasureViewModel>()
+        .Name("grid")
+        .Columns(columns =>
+        {
+            columns.Bound(c => c.Id).Width(75);
+            columns.ForeignKey(c => c.productionUnitId, (System.Collections.IEnumerable)ViewData["productionUnits"], "Id", "info").Title("[[[prod. unit]]]").Width(150);
+            columns.ForeignKey(c => c.sensorId, (System.Collections.IEnumerable)ViewData["sensorTypes"], "Id", "name").Title("[[[sensor type]]]").Width(100);
+            columns.Bound(c => c.captureDate).Format("{0:d} - {0:t}").Width(100);
+            columns.Bound(c => c.value).Width(75);
+            //columns.Command(command => command.Destroy()).Width(110);
+        })
+        //.ToolBar(toolbar =>
+        //{
+        //    toolbar.Create();
+        //    toolbar.Save();
+        //})
+        .HtmlAttributes(new { style = "height: 80vh" })
+        .Editable(editable => editable.Mode(GridEditMode.InCell))
+        .Navigatable()
+        .Sortable()
+        .Scrollable()
+        .Filterable()
+        .Groupable()
+        .ColumnMenu()
+        .Pageable(pageable => pageable
+            .Refresh(true)
+            .PageSizes(true)
+            .ButtonCount(5))
+        .DataSource(dataSource => dataSource
+            .Ajax()
+            .Batch(true)
+            .Filter(f => f.Add(a => a.captureDate).IsGreaterThan(getThisWeekMonday()))
+            .PageSize(15)
+            .ServerOperation(false)
+            .Model(model =>
+            {
+                model.Id(c => c.Id);
+                model.Field(c => c.Id).Editable(false);
+                model.Field(c => c.captureDate).Editable(false);
+                model.Field(c => c.productionUnitId).Editable(false);
+                model.Field(c => c.value).Editable(false);
+                model.Field(c => c.sensorId).DefaultValue(1);
+            })
+            .Events(events => events.Error("error_handler"))
+            //.Create("Editing_Create", "Measures")
+            .Read("Editing_Read", "Measures")
+        //.Update("Editing_Update", "Measures")
+        //.Destroy("Editing_Destroy", "Measures")
+        )
+        )
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    function error_handler(e) {
+        if (e.errors) {
+            var measure = "Errors:\n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function() {
+                        measure += this + "\n";
+                    });
+                }
+            });
+            alert(measure);
+        }
+    }
+</script>
+

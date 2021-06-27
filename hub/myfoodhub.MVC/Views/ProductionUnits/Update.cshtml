@@ -1,0 +1,625 @@
+﻿@using myfoodapp.Hub.Models
+@model ProductionUnitViewModel
+
+<script type="text/javascript">
+
+    function onBackClick() {
+        var productionUnitId = $('#routeDataId').val();
+        window.location = window.location.origin + "/PioneerProductionSite/" + productionUnitId;
+    }
+
+	function onAdd(currentOptionId) {
+        var productionUnitId = $('#routeDataId').val();
+        $.ajax({
+            url: "@Url.Action("AddOptionFromProductionUnit", "ProductionUnits")",
+            dataType: "json",
+            data: { id: productionUnitId, optionId: currentOptionId },
+            type: "POST",
+            success: function (response) {
+
+            }
+        });
+    }
+
+	function onRemove(currentOptionId) {
+        var productionUnitId = $('#routeDataId').val();
+
+        $.ajax({
+            url: "@Url.Action("RemoveOptionFromProductionUnit", "ProductionUnits")",
+            dataType: "json",
+            data: { id: productionUnitId, optionId: currentOptionId },
+            type: "POST",
+            success: function (response) {
+
+            }
+        });
+    }
+
+    function onSuccess() {
+
+    }
+
+</script>
+
+<input type="hidden" value='@ViewContext.RouteData.Values["id"]' id="routeDataId" />
+
+<div id="main-section-header">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-4">
+				<h2 class="title">[[[Production Units Management]]]</h2>
+			</div>
+			<div class="col-lg-8">
+				<div class="header-nav">
+					<div class="header-nav-item">
+						<a href="#" class="btn btn-primary btn-main" onclick="onBackClick()">[[[Back to Details]]]</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="flex-block">
+	@using (Html.BeginForm("Update", "ProductionUnits", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "update-form", role = "form" }))
+	{
+		@Html.HiddenFor(model => model.Id)
+		@Html.HiddenFor(model => model.locationLatitude)
+		@Html.HiddenFor(model => model.locationLongitude)
+		@Html.HiddenFor(model => model.options)
+		@Html.HiddenFor(model => model.picturePath)
+
+		@Html.HiddenFor(model => model.productionUnitStatusId)
+		@Html.HiddenFor(model => model.productionUnitTypeId)
+		@Html.HiddenFor(model => model.ownerId)
+		@Html.HiddenFor(model => model.version)
+		@Html.HiddenFor(model => model.startDate)
+		@Html.HiddenFor(model => model.reference)
+
+		@Html.AntiForgeryToken()
+
+		@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+		<div class="error">
+		</div>
+		<div class="row">
+			<div class="i-wrapper col-md-8">
+				<label class="input-caption">[[[Info]]]</label>
+				@Html.TextBoxFor(model => model.info, new { @readonly = "true", @class = "default-input" })
+			</div>
+			<div class="i-wrapper col-md-4">
+				<label class="input-caption">[[[Owner]]]</label>
+				@Html.TextBoxFor(model => model.owner.pioneerCitizenName, new { @readonly = "true", @class = "default-input" })
+			</div>
+		</div>
+		<div class="i-wrapper">
+			<label class="input-caption">[[[Hydroponic Type]]]</label>
+			<select name="hydroponicTypeId" class="default-input" id="hydroponicTypeId-dropdown"></select>
+		</div>
+		<div class="i-wrapper-img">
+			<div id="unit-image-wrapper">
+				<img id="unit-image" src="/Content/Pictures/Sites/@Model.picturePath" onerror="srcNoLoad()" />
+			</div>
+			<input type="file" name="file" id="file" class="input-file" data-max-size="2048" accept="image/jpeg">
+			<label for="file" class="btn btn-tertiary js-labelFile">
+				<i class="icon fa fa-check"></i>
+				<span class="js-fileName">[[[Change image]]]</span>
+			</label>
+			<div class="img-error"></div>
+		</div>
+
+		<div class="i-wrapper">
+			<div class="checkbox-tile-group form-group">
+				<div class="row">
+					
+				</div>
+			</div>
+		</div>
+
+		<div class="i-wrapper-btn">
+			<button class="btn-infosave">[[[Save and Close]]]</button>
+		</div>
+
+
+	}
+</div>
+
+
+<script>
+
+	$("#file").on("change", function () {
+		$('input[type=file][data-max-size]').each(function () {
+			if (typeof this.files[0] !== 'undefined') {
+				var maxSize = parseInt($(this).attr('max-size'), 10),
+					size = this.files[0].size;
+				isOk = maxSize > size;
+				return isOk;
+			}
+		});
+		return isOk;
+	});
+
+
+	function srcNoLoad() {
+		$("#unit-image").attr("src", "/Content/Pictures/Sites/NoImage.png")
+	}
+
+	(function () {
+
+		'use strict';
+		$('.input-file').each(function () {
+			var $input = $(this),
+				$label = $input.next('.js-labelFile'),
+				labelVal = $label.html();
+
+			$input.on('change', function (element) {
+				if (typeof this.files[0] !== 'undefined') {
+					var maxSize = parseInt($(this).attr('data-max-size'), 10),
+						size = this.files[0].size;
+					isOk = maxSize > (size / 1024);
+					if (isOk) {
+						var fileName = $("#file").val();
+						var idxDot = fileName.lastIndexOf(".") + 1;
+						var extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
+						if (extFile == "jpg" || extFile == "jpeg" || extFile == "png") {
+							if (element.target.value) fileName = element.target.value.split('\\').pop();
+							{
+								fileName ? $label.addClass('has-file').find('.js-fileName').html(fileName) : $label.removeClass('has-file').html(labelVal);
+								$("#picturePath").val(fileName);
+							}
+						}
+					}
+				}
+			});
+		});
+
+	})();
+
+	function readURL(input) {
+		if (input.files && input.files[0]) {
+			var reader = new FileReader();
+			reader.onload = function (e) {
+				$('#unit-image').attr('src', e.target.result);
+			}
+			reader.readAsDataURL(input.files[0]);
+		}
+	}
+
+	$("#file").change(function () {
+		var isOk = true;
+		$('input[type=file][data-max-size]').each(function () {
+			if (typeof this.files[0] !== 'undefined') {
+				var maxSize = parseInt($(this).attr('data-max-size'), 10),
+					size = this.files[0].size;
+				isOk = maxSize > (size / 1024);
+				if (isOk) {
+					var fileName = $("#file").val();
+					var idxDot = fileName.lastIndexOf(".") + 1;
+					var extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
+					if (extFile == "jpg" || extFile == "jpeg") {
+						$(".img-error").text("");
+						savePicture();
+						//readURL(this);
+					} else {
+
+						$(".img-error").text("Only jpg/jpeg files are allowed!");
+					}
+				}
+				else
+					$(".img-error").text("Image is too large!");
+			}
+		});
+	});
+
+	$('form').submit(function (e) {
+		var form = this;
+		e.preventDefault();
+
+		form.submit();
+
+	});
+
+
+	function savePicture() {
+
+		let files = new FormData();
+		var totalFiles = document.getElementById('file').files.length;
+		for (var i = 0; i < totalFiles; i++) {
+			var file = document.getElementById('file').files[i];
+			files.append("unit-image", file);
+		}
+		var id = $("#Id").val();
+		$.ajax({
+			url: "@Url.Action("SavePicture", "ProductionUnits")" + "?id=" + id,
+			dataType: "json",
+			data: files,
+			type: "POST",
+			beforeSend: function () {
+				$('.loaderArea').show();
+			},
+			complete: function () {
+				$('.loaderArea').hide();
+			},
+			processData: false,
+			contentType: false,
+			success: function (response) {
+				$("#unit-image").attr("src", "/Content/Pictures/Sites/" + response);
+			}
+		});
+	}
+
+	$(document).ready(function () {
+		var array = @Html.Raw(Json.Encode(ViewBag.Options));
+		console.log(array);
+		var div = $(".checkbox-tile-group .row");
+		var checked;
+		for (var i = 0; i < array.length; i++) {
+			checked = array[i].Checked ? "checked" : "";
+			$(div).append(`<div class="col-md-3">
+				<input id="checkbox-${array[i].Id}" data-id="${array[i].Id}" name="option" class="custom-checkbox" ${checked} type="checkbox">
+				<label for="checkbox-${array[i].Id}">[[[${array[i].name}]]]</label>
+			</div>`);
+		}
+
+		$(".custom-checkbox").on("change", function () {
+			if ($(this).prop("checked")) {
+				onAdd($(this).attr("data-id"));
+			}
+			else {
+				onRemove($(this).attr("data-id"));
+			}
+		})
+	
+
+		$.ajax({
+			url: "@Url.Action("HydroponicTypes_Read", "ProductionUnits")",
+			dataType: "json",
+			data: { },
+			type: "POST",
+			success: function (response) {
+				$.each(response, function () {
+					$("#hydroponicTypeId-dropdown").append($("<option />").val(this.Id).text(this.name));
+				});
+				$("#hydroponicTypeId-dropdown").val(@Model.hydroponicTypeId);
+
+			}
+		});
+	});
+		</script>
+
+
+		<style type="text/css">
+			.img-error{
+				color: red;
+				text-align: center;
+				margin: 15px;
+			}
+			.checkbox-tile-group .row{
+				margin: 0 -15px 0 -15px;
+
+			}
+			.checkbox-tile-group {
+				display: flex;
+				margin-bottom: 30px;
+				flex-direction: column;
+			}
+
+			.checkbox-tile-group .input-container {
+				position: relative;
+				height: 110px;
+				width: 110px;
+				transition: 0.2s;
+			}
+
+			.checkbox-tile-group .input-container:hover,
+			.checkbox-tile-group .more-item:hover {
+				opacity: 0.8;
+			}
+
+			.checkbox-tile-group .input-container .checkbox-button {
+				opacity: 0;
+				position: absolute;
+				top: 0;
+				left: 0;
+				height: 100%;
+				width: 100%;
+				margin: 0;
+				cursor: pointer;
+			}
+				.checkbox-tile-group .col-md-3{
+					padding: 5px;
+				}
+				.checkbox-tile-group .input-container .checkbox-tile {
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+					justify-content: center;
+					width: 100%;
+					height: 100%;
+					border: 2px solid #F3F6F8;
+					border-radius: 10px;
+					padding: 22px 12px 12px;
+					transition: 0.2s;
+				}
+
+			.checkbox-tile-group .input-container .icon svg {
+				fill: #2EA636;
+				width: 40px;
+				height: 40px;
+			}
+
+			.checkbox-tile-group .input-container .checkbox-tile-label {
+				text-align: center;
+				font-size: 14px;
+				font-weight: 400;
+				color: #6C7A73;
+				margin-bottom: 0;
+			}
+
+			.checkbox-tile-group .input-container .checkbox-button:checked + .checkbox-tile {
+				background-color: #2EA636;
+				border: 2px solid #2EA636;
+				color: #FFF;
+			}
+
+			.checkbox-tile-group .checkbox-container .checkbox-button:checked + .checkbox-tile .icon svg {
+				fill: #FFF;
+				background-color: #2EA636;
+			}
+
+			.checkbox-tile-group .input-container .checkbox-button:checked + .checkbox-tile .checkbox-tile-label {
+				color: #FFF;
+				background-color: #2EA636;
+			}
+
+			.checkbox-tile-group .checkbox-tile-row {
+				display: flex;
+				justify-content: space-between;
+			}
+
+			.checkbox-tile-group .incomplete-row {
+				justify-content: flex-start;
+				margin-top: 11px;
+			}
+
+			.checkbox-tile-group .incomplete-row .input-container {
+				margin-right: 12px;
+			}
+
+			.checkbox-tile-group .checkbox-tile-row.more-row {
+				display: flex;
+				justify-content: flex-start;
+				margin-bottom: 8px;
+			}
+
+			.checkbox-tile-group .checkbox-tile-row .more-item {
+				width: 232px;
+				transition: 0.2s;
+				margin-left: 12px;
+			}
+
+			.checkbox-tile-group .checkbox-tile-row .more-item:first-of-type {
+				margin-left: 0;
+			}
+
+			.custom-checkbox {
+				display: none;
+			}
+
+				.custom-checkbox + label {
+					height: 92px;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					word-break: break-word;
+					background-color: #fff;
+					border: 2px solid #F3F6F8;
+					border-radius: 10px;
+					width: 100%;
+					cursor: pointer;
+					text-align: center;
+					font-size: 14px;
+					font-weight: 400;
+					color: #6C7A73;
+					transition: 0.2s;
+				}
+
+				.custom-checkbox:checked + label {
+					background-color: #2EA636;
+					color: #fff;
+					border: 2px solid transparent;
+				}
+
+
+			.btn-tertiary {
+				position: relative;
+				background: none;
+				border-radius: 25px;
+				padding: 10px 60px 10px 60px;
+				color: #2EA636;
+				border: 2px solid rgba(46,166,54, .5);
+				margin: 20px auto 20px auto;
+				display: block;
+				max-width: calc(100% - 30px);
+				width: 220px;
+				line-height: 40px;
+				transition: .5s;
+			}
+
+				.btn-tertiary:hover,
+				.btn-tertiary:focus {
+					outline: none;
+					border-radius: 20px 20px;
+					box-shadow: inset 0 0 0 2em rgba(46,166,54, .5);
+				}
+
+			#unit-image-wrapper {
+				display: block;
+				margin: 20px auto 20px auto;
+				max-width: calc(100% - 30px);
+				width: 220px;
+			}
+			#unit-image {
+				width: 100%;
+				border-radius: 15px;
+			}
+			/* input file style */
+			.input-file {
+				width: 0.1px;
+				height: 0.1px;
+				opacity: 0;
+				overflow: hidden;
+				position: absolute;
+				z-index: -1;
+			}
+
+				.input-file + .js-labelFile {
+					overflow: hidden;
+					text-overflow: ellipsis;
+					white-space: nowrap;
+					padding: 0 10px;
+					cursor: pointer;
+				}
+
+					.input-file + .js-labelFile .icon:before {
+						content: "\f093";
+					}
+
+					.input-file + .js-labelFile.has-file .icon:before {
+						content: "\f00c";
+						color: #5AAC7B;
+					}
+
+
+			.error {
+				text-align: center;
+				color: red;
+			}
+
+			.flex-block {
+				margin-top: 50px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+
+			.i-wrapper {
+				margin: 20px 0 20px 0;
+				padding: 0;
+			}
+
+			.i-wrapper.col-md-8{
+				padding-right: 15px;
+			}
+
+			#main-section {
+				background: none;
+			}
+
+			.update-form {
+				font-family: 'Roboto-Thin';
+				margin-top: 300px;
+				font-size: 16px;
+				width: 80%;
+				margin: auto;
+				box-shadow: 0 0 20px #F3F6F8;
+				border-radius: 10px;
+				padding: 40px;
+			}
+
+			.i-wrapper .default-input {
+				padding-left: 15px;
+				font-weight: bold;
+				color: #2EA636;
+				height: 50px;
+				width: 100%;
+				border: 3px solid #F3F6F8;
+				border-radius: 7px;
+			}
+
+				.i-wrapper .default-input[readonly] {
+					background-color: #FCFCFC
+				}
+
+			.i-wrapper-btn {
+				margin: 20px 0 20px 0;
+				text-align: right;
+			}
+
+
+			.i-wrapper-img {
+				margin: 20px 0 20px 0;
+				text-align: right;
+				border: 3px dashed #F3F6F8;
+			}
+
+			.btn-infosave {
+				position: relative;
+				background: none;
+				border-radius: 25px;
+				padding: 10px 60px 10px 60px;
+				color: #2EA636;
+				border: 2px solid rgba(46,166,54, .5);
+				margin-top: 25px;
+				transition: .5s;
+			}
+
+			.input-caption {
+				color: #6C7A73;
+				display: block;
+				margin: 10px 0 10px 0;
+			}
+
+			input:-webkit-autofill,
+			input:-webkit-autofill:hover,
+			input:-webkit-autofill:focus
+			textarea:-webkit-autofill,
+			textarea:-webkit-autofill:hover
+			textarea:-webkit-autofill:focus,
+			select:-webkit-autofill,
+			select:-webkit-autofill:hover,
+			select:-webkit-autofill:focus {
+				border: 0;
+				-webkit-text-fill-color: #2EA636;
+				transition: background-color 5000s ease-in-out 0s;
+			}
+
+			.default-input:focus {
+				outline: none;
+			}
+
+			.btn-infosave:hover,
+			.btn-infosave:focus {
+				outline: none;
+				border-radius: 20px 20px;
+				box-shadow: inset 0 0 0 2em rgba(46,166,54, .5);
+			}
+
+			.btn-infosave::after {
+				content: "";
+				position: absolute;
+				display: block;
+				left: 50%;
+				top: 50%;
+				width: 90px;
+				height: 90px;
+				margin: -45px;
+				-webkit-border-radius: 50%;
+				border-radius: 50%;
+				background-image: url(/Content/images/dots_anim.svg);
+				-webkit-animation: infinite-rotate 15s infinite linear;
+				animation: infinite-rotate 15s infinite linear;
+				transition: .5s;
+			}
+
+			@@-webkit-keyframes infinite-rotate {
+				from {
+					-webkit-transform: rotate(0deg);
+				}
+
+				to {
+					-webkit-transform: rotate(359deg);
+				}
+			}
+		</style>
+
+

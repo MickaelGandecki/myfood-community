@@ -1,0 +1,38 @@
+﻿<Page 
+    x:Class="myfoodapp.Views.LogManagementPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:myfoodapp.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:telerik="using:Telerik.UI.Xaml.Controls.Grid"
+    xmlns:Primitives="using:Telerik.UI.Xaml.Controls.Primitives"
+    mc:Ignorable="d">
+
+    <Grid Background="{StaticResource AppBrush}">
+        <Pivot x:Name="pivot" CanDrag="False">
+            <PivotItem Header="System Logs" FontSize="8">
+                <telerik:RadDataGrid ItemsSource="{Binding Logs.Result, Mode=TwoWay}" AutoGenerateColumns="False">
+                    <telerik:RadDataGrid.Columns>
+                        <telerik:DataGridDateColumn PropertyName="date" Header="Date"/>
+                        <telerik:DataGridTextColumn PropertyName="type" Header="Type"/>
+                        <telerik:DataGridTextColumn PropertyName="description" Header="Description"/>
+                    </telerik:RadDataGrid.Columns>
+                </telerik:RadDataGrid>
+            </PivotItem>
+        </Pivot>
+        <Primitives:RadBusyIndicator IndicatorAnimationStyle="{StaticResource DefaultIndicatorAnimation}" IsActive="{x:Bind ViewModel.IsBusy, Mode=TwoWay}">
+            <Primitives:RadBusyIndicator.ContentTemplate>
+                <DataTemplate>
+
+                </DataTemplate>
+            </Primitives:RadBusyIndicator.ContentTemplate>
+        </Primitives:RadBusyIndicator>
+    </Grid>
+    <Page.BottomAppBar>
+        <CommandBar x:Name="cmdBar" Background="Green" IsOpen="False">
+            <AppBarButton Foreground="White" Icon="Refresh"  Label="Refresh Logs" IsEnabled="True" Click="{x:Bind ViewModel.OnRefreshClicked}"/>
+            <AppBarButton Foreground="White" Icon="Back"  Label="Back" IsEnabled="True" Click="{x:Bind ViewModel.OnBackClicked}"/>
+        </CommandBar>
+    </Page.BottomAppBar>
+</Page>

@@ -1,0 +1,98 @@
+﻿@model IEnumerable<myfoodapp.Hub.Models.Log>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="main-section-header" class="row">
+    <h2 id="title" class="col-md-3">[[[Application Logs]]]</h2>
+    <div style="clear:both;"></div>
+</div>
+
+<div id="productionUnits-grid" class="main-section-content row">
+    <div id="productionUnits-details" class="col-md-2">
+        <h3 class="section-header">[[[Manage Application Logs]]]</h3>
+    </div>
+    <div id="grid-container" class="col-md-10" style="padding-bottom:40px">
+        @(Html.Kendo().Grid<myfoodapp.Hub.Models.Log>()
+        .Name("grid")
+        .Columns(columns =>
+        {
+            columns.Bound(c => c.date).Format("{0:d}").Width(80).MinScreenWidth(380).Groupable(false);
+            columns.Bound(c => c.type).Width(175).MinScreenWidth(380).Groupable(false);
+            columns.Bound(c => c.description).Width(175).MinScreenWidth(380).Groupable(false);
+            columns.Bound(c => c.stackCall).Width(175).MinScreenWidth(380).Groupable(false);
+        })
+        //.ToolBar(toolbar =>
+        //{
+        //    toolbar.Create();
+        //    toolbar.Save();
+        //})
+        .HtmlAttributes(new { style = "height: 80vh;" })
+        //.Editable(editable => editable.Mode(GridEditMode.PopUp).TemplateName("ProductionUnitEditTemplate"))
+        //.Editable(editable => editable.Mode(GridEditMode.InCell))
+        .Scrollable()
+        //.Filterable()
+        .Groupable()
+        //.ColumnMenu()
+        .Pageable(pageable => pageable
+            .Refresh(true)
+            .PageSizes(true)
+            .ButtonCount(5))
+        //.Events(events => events.DataBound("onDatabound"))
+        .DataSource(dataSource => dataSource
+            .Ajax()
+            //.PageSize(15)
+            .ServerOperation(false)
+            .Model(model =>
+            {
+                model.Id(c => c.date);
+                model.Field(c => c.type).Editable(false);
+                model.Field(c => c.description).Editable(false);
+                model.Field(c => c.stackCall).Editable(false);
+            })
+            .Events(events =>  events.Error("error_handler"))
+            //.Create("Editing_Create", "ProductionUnits")
+            .Read("Editing_Read", "Log")
+        //.Update("Editing_Update", "ProductionUnits")
+        //.Destroy("Editing_Destroy", "ProductionUnits")
+        )
+        )
+    </div>
+</div>
+
+    <script type="text/javascript">
+    function error_handler(e) {
+        if (e.errors) {
+            var measure = "Errors:\n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function() {
+                        measure += this + "\n";
+                    });
+                }
+            });
+            alert(measure);
+        }
+    }
+
+    function onDatabound(e) {
+        $("k-grid-ViewDetails").addClass("k-grid-button");
+    }
+
+
+    </script>
+
+    <style>
+        .k-button {
+            color: #018001;
+            background-color: #018001;
+        }
+
+        /*.k-grouping-header {
+        display:none;
+        }*/
+
+    </style>
+
